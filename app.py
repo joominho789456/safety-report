@@ -53,6 +53,27 @@ supabase = create_client(
 # 2-1. OpenAI 연결
 # =========================================================
 
+def 관리자계정():
+
+    아이디 = os.getenv("ADMIN_ID")
+    비밀번호 = os.getenv("ADMIN_PW")
+
+    if 아이디 and 비밀번호:
+        return 아이디.strip(), 비밀번호.strip()
+
+    try:
+        아이디 = st.secrets["admin"]["id"]
+        비밀번호 = st.secrets["admin"]["password"]
+
+        if 아이디 and 비밀번호:
+            return str(아이디).strip(), str(비밀번호).strip()
+
+    except Exception:
+        pass
+
+    return None, None
+
+
 def AI_키가져오기():
 
     키 = os.getenv("OPENAI_API_KEY")
@@ -168,10 +189,32 @@ if "현황상세ID" not in st.session_state:
 # 4. 이미지 불러오기
 # =========================================================
 
-def 이미지_base64(파일명):
-    경로 = Path(__file__).parent / 파일명
+def 파일찾기(파일명):
 
-    if not 경로.exists():
+    폴더 = Path(__file__).parent
+    경로 = 폴더 / 파일명
+
+    if 경로.exists():
+        return 경로
+
+    # 대소문자가 달라도 찾도록 (리눅스 서버 대응)
+    목표 = 파일명.lower()
+
+    try:
+        for 후보 in 폴더.iterdir():
+            if 후보.is_file() and 후보.name.lower() == 목표:
+                return 후보
+    except Exception:
+        pass
+
+    return None
+
+
+def 이미지_base64(파일명):
+
+    경로 = 파일찾기(파일명)
+
+    if 경로 is None:
         return None
 
     try:
@@ -975,18 +1018,16 @@ def 페이지헤더(제목, 부제=""):
 
     로고 = f'<img src="{logo_image}">' if logo_image else ""
 
-    st.markdown(
-        f"""
-        <div class="page-head">
-            {로고}
-            <div>
-                <div class="ph-title">{안전(제목)}</div>
-                <div class="ph-sub">{안전(부제)}</div>
-            </div>
-        </div>
-        """,
-        unsafe_allow_html=True
+    조각 = (
+        '<div class="page-head">'
+        + 로고
+        + '<div>'
+        + f'<div class="ph-title">{안전(제목)}</div>'
+        + f'<div class="ph-sub">{안전(부제)}</div>'
+        + '</div></div>'
     )
+
+    st.markdown(조각, unsafe_allow_html=True)
 
 
 def 섹션(제목):
@@ -1215,19 +1256,17 @@ def 제보행(제보, 버튼키, 부서표시=True, 요약길이=110):
 
 if st.session_state.화면 == "홈":
 
-    if logo_image:
-        st.markdown(
-            f"""
-            <div class="home-header">
-                <img src="{logo_image}">
-                <span class="home-div"></span>
-                <span class="home-title">안전제보시스템</span>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-    else:
-        st.title("안전제보시스템")
+    홈로고 = f'<img src="{logo_image}">' if logo_image else ""
+    홈구분 = '<span class="home-div"></span>' if logo_image else ""
+
+    st.markdown(
+        '<div class="home-header">'
+        + 홈로고
+        + 홈구분
+        + '<span class="home-title">안전제보시스템</span>'
+        + '</div>',
+        unsafe_allow_html=True
+    )
 
     st.markdown(
         """
@@ -1698,9 +1737,17 @@ elif (
                 key="login_button"
             ):
 
-                if 관리자ID == "admin" and 관리자비밀번호 == "1234":
+                등록ID, 등록비밀번호 = 관리자계정()
+
+                if not 등록ID or not 등록비밀번호:
+                    st.error(
+                        "관리자 계정이 설정되지 않았습니다. secrets 에 admin 항목을 추가해주세요."
+                    )
+
+                elif 관리자ID == 등록ID and 관리자비밀번호 == 등록비밀번호:
                     st.session_state.관리자로그인 = True
                     st.rerun()
+
                 else:
                     st.error("ID 또는 비밀번호가 올바르지 않습니다.")
 
