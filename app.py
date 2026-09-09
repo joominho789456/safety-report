@@ -1268,14 +1268,7 @@ if st.session_state.화면 == "홈":
         unsafe_allow_html=True
     )
 
-    st.markdown(
-        """
-        <div class="home-info">
-        현장에서 발견한 유해·위험요인을 누구나 쉽고 빠르게 제보할 수 있습니다.
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+    st.write("")
 
     여백L, col1, col2, 여백R = st.columns([0.5, 4, 4, 0.5], gap="medium")
 
