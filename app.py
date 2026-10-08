@@ -766,6 +766,53 @@ st.markdown(
         min-height: 40px;
     }
 
+    /* ===== 긴급 연락처 배너 ===== */
+    .emg-box {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+        background-color: #FFF5F4;
+        border: 1px solid #F5C6C2;
+        border-left: 6px solid var(--hc-red);
+        border-radius: 12px;
+        padding: 16px 22px;
+        margin: 6px 0 18px 0;
+    }
+
+    .emg-box .emg-title {
+        color: var(--hc-red);
+        font-size: 17px;
+        font-weight: 800;
+        letter-spacing: -0.3px;
+    }
+
+    .emg-box .emg-sub {
+        color: var(--hc-gray);
+        font-size: 13.5px;
+        margin-top: 3px;
+        line-height: 1.55;
+    }
+
+    .emg-box .emg-call {
+        display: inline-block;
+        background-color: var(--hc-red);
+        color: #FFFFFF !important;
+        text-decoration: none !important;
+        font-size: 18px;
+        font-weight: 800;
+        letter-spacing: 0.5px;
+        padding: 11px 22px;
+        border-radius: 10px;
+        white-space: nowrap;
+        box-shadow: 0 2px 8px rgba(217, 48, 37, 0.25);
+    }
+
+    .emg-box .emg-call:hover {
+        background-color: #B3261E;
+    }
+
     .list-count {
         color: var(--hc-gray);
         font-size: 13.5px;
@@ -1030,6 +1077,50 @@ def 페이지헤더(제목, 부제=""):
     st.markdown(조각, unsafe_allow_html=True)
 
 
+def 긴급연락처():
+
+    # 번호는 코드에 적지 않고 Secrets 에서 읽습니다. (공개 저장소 노출 방지)
+    # Secrets 예시:
+    # [emergency]
+    # name = "안전관리자"
+    # phone = "010-0000-0000"
+
+    try:
+        이름 = str(st.secrets["emergency"].get("name", "안전관리자")).strip()
+        번호 = str(st.secrets["emergency"]["phone"]).strip()
+    except Exception:
+        return None, None
+
+    if not 번호:
+        return None, None
+
+    return 이름 or "안전관리자", 번호
+
+
+def 긴급배너():
+
+    이름, 번호 = 긴급연락처()
+
+    if 번호:
+        전화링크 = "".join(c for c in 번호 if c.isdigit() or c == "+")
+        버튼 = f'<a class="emg-call" href="tel:{안전(전화링크)}">📞 {안전(번호)}</a>'
+        안내 = f"부상자 발생·화재·설비 이상 등 즉시 대응이 필요한 상황은 제보 대신 {안전(이름)}에게 바로 전화해주세요."
+    else:
+        버튼 = '<a class="emg-call" href="tel:119">📞 119</a>'
+        안내 = "부상자 발생·화재 등 즉시 대응이 필요한 상황은 제보 대신 바로 신고해주세요."
+
+    st.markdown(
+        '<div class="emg-box">'
+        + '<div>'
+        + '<div class="emg-title">🚨 긴급 상황은 전화로 먼저</div>'
+        + f'<div class="emg-sub">{안내}<br>생명이 위급하면 119에 먼저 신고하세요.</div>'
+        + '</div>'
+        + 버튼
+        + '</div>',
+        unsafe_allow_html=True
+    )
+
+
 def 섹션(제목):
     st.markdown(
         f'<div class="sec-title">{안전(제목)}</div>',
@@ -1268,7 +1359,10 @@ if st.session_state.화면 == "홈":
         unsafe_allow_html=True
     )
 
-    st.write("")
+    여백A, 배너칸, 여백B = st.columns([0.5, 8, 0.5])
+
+    with 배너칸:
+        긴급배너()
 
     여백L, col1, col2, 여백R = st.columns([0.5, 4, 4, 0.5], gap="medium")
 
@@ -1361,6 +1455,8 @@ elif st.session_state.화면 == "근로자메뉴":
 elif st.session_state.화면 == "제보":
 
     페이지헤더("안전제보", "현장에서 발견한 유해·위험요인을 입력해주세요.")
+
+    긴급배너()
 
     with st.container(border=True):
 
