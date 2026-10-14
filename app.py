@@ -321,25 +321,41 @@ st.markdown(
     """
     <style>
 
-    /* 한글 가독성이 좋은 Pretendard 글꼴 (불러오지 못하면 기본 글꼴로 표시) */
+    /* =====================================================
+       포털형(구글·네이버 계열) 디자인
+       - 장식(왼쪽 색 띠, 그라데이션, 무거운 그림자) 제거
+       - 얇지만 또렷한 선 + 넉넉한 여백 + 둥근 알약 버튼
+       - 상태는 연한 바탕 + 진한 글씨(톤 칩)
+       ===================================================== */
+
     @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css");
 
-    /* ===== 컬러 토큰 ===== */
     :root {
         --hc-blue:        #005CAB;
         --hc-blue-dark:   #00477F;
-        --hc-blue-soft:   #E9F2FA;
-        --hc-blue-line:   #CFE0EF;
-        --hc-gray:        #5F6368;
-        --hc-gray-soft:   #F1F3F5;
-        --hc-line:        #C4CED9;
-        --hc-ink:         #1A1D21;
+        --hc-blue-tonal:  #E3EEF8;
+        --hc-blue-line:   #B9D3EC;
+
+        --hc-ink:         #1F1F1F;
+        --hc-ink-2:       #444746;
+        --hc-gray:        #5E6368;
+        --hc-outline:     #747775;   /* 입력칸 테두리 (구글 입력칸과 같은 진한 회색) */
+        --hc-line:        #C4C7C5;   /* 카드 테두리 */
+        --hc-line-soft:   #E3E5E8;   /* 구분선 */
+        --hc-surface-2:   #F6F8FA;   /* 연회색 면 */
+
+        --hc-red:         #D93025;
+        --hc-red-ink:     #B3261E;
+        --hc-red-tonal:   #FCE8E6;
+        --hc-amber-ink:   #9A5B00;
+        --hc-amber-tonal: #FEF3D6;
+        --hc-green-ink:   #137333;
+        --hc-green-tonal: #E6F4EA;
+
         --hc-bg:          #FFFFFF;
         --hc-card:        #FFFFFF;
-        --hc-red:         #D93025;
-        --hc-amber:       #C97A0A;
-        --hc-green:       #1E8E3E;
-        --hc-shadow:      0 1px 2px rgba(16, 24, 40, 0.04), 0 4px 14px rgba(16, 24, 40, 0.05);
+        --hc-radius:      16px;
+        --hc-hover-shadow: 0 1px 3px rgba(60, 64, 67, 0.15), 0 4px 12px rgba(60, 64, 67, 0.10);
     }
 
     /* ===== 기본 ===== */
@@ -352,8 +368,8 @@ st.markdown(
     }
 
     .block-container {
-        max-width: 1120px;
-        padding-top: 1.6rem;
+        max-width: 1040px;
+        padding-top: 1.4rem;
         padding-bottom: 4rem;
     }
 
@@ -362,56 +378,61 @@ st.markdown(
     }
 
     h1, h2, h3 {
-        color: var(--hc-blue) !important;
+        color: var(--hc-ink) !important;
         font-weight: 700 !important;
         letter-spacing: -0.4px;
     }
 
-    hr {
-        border-color: var(--hc-line) !important;
-    }
-
-    /* ===== 일반 버튼 ===== */
+    /* ===== 버튼 공통: 알약 모양 ===== */
     .stButton > button,
     .stDownloadButton > button {
-        border-radius: 10px;
-        font-weight: 600;
-        min-height: 46px;
+        border-radius: 999px;
+        min-height: 44px;
         border: 1px solid var(--hc-line);
         background-color: #FFFFFF;
-        color: var(--hc-ink);
-        transition: all 0.15s ease;
+        color: var(--hc-ink-2);
+        box-shadow: none;
+        transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .stButton > button p,
+    .stDownloadButton > button p {
+        font-weight: 600 !important;
     }
 
     .stButton > button:hover,
     .stDownloadButton > button:hover {
-        border-color: var(--hc-blue);
+        border-color: var(--hc-line);
         color: var(--hc-blue);
-        background-color: var(--hc-blue-soft);
+        background-color: var(--hc-surface-2);
     }
 
     .stButton > button[kind="primary"] {
         background-color: var(--hc-blue) !important;
         color: #FFFFFF !important;
         border: 1px solid var(--hc-blue) !important;
-        box-shadow: 0 2px 6px rgba(0, 92, 171, 0.22);
+        box-shadow: none !important;
     }
 
     .stButton > button[kind="primary"]:hover {
         background-color: var(--hc-blue-dark) !important;
         border-color: var(--hc-blue-dark) !important;
-        box-shadow: 0 4px 12px rgba(0, 92, 171, 0.28);
+        box-shadow: 0 1px 3px rgba(0, 71, 127, 0.3) !important;
     }
 
-    /* ===== 페이지 이동 바 (상단·하단 공통) ===== */
+    .stButton > button:disabled {
+        opacity: 0.45;
+    }
+
+    /* ===== 상단 이동 바 ===== */
     .nav-line {
         height: 1px;
-        background-color: var(--hc-line);
-        margin: 10px 0 18px 0;
+        background-color: var(--hc-line-soft);
+        margin: 12px 0 28px 0;
     }
 
     .nav-line.bottom {
-        margin: 26px 0 12px 0;
+        margin: 32px 0 14px 0;
     }
 
     .crumb {
@@ -421,75 +442,68 @@ st.markdown(
         gap: 2px;
         font-size: 14px;
         color: var(--hc-gray);
-        padding-left: 6px;
+        padding-left: 4px;
     }
 
     .crumb .sep {
-        color: #AEB8C4;
-        margin: 0 8px;
-        font-weight: 700;
+        color: #A8ADB3;
+        margin: 0 6px;
     }
 
     .crumb .now {
-        color: var(--hc-blue);
+        color: var(--hc-ink);
         font-weight: 700;
-        background-color: var(--hc-blue-soft);
-        padding: 4px 11px;
-        border-radius: 999px;
     }
 
-    /* ← 이전 화면: 파란색으로 가장 눈에 띄게 */
+    /* ← 이전: 연한 파란 면(톤 버튼) */
     div[class*="st-key-navback"] button {
-        background-color: var(--hc-blue) !important;
-        color: #FFFFFF !important;
-        border: 1px solid var(--hc-blue) !important;
-        font-size: 15px !important;
-        font-weight: 700 !important;
-        min-height: 46px !important;
-        box-shadow: 0 3px 10px rgba(0, 92, 171, 0.25) !important;
+        background-color: var(--hc-blue-tonal) !important;
+        color: var(--hc-blue) !important;
+        border: 1px solid var(--hc-blue-tonal) !important;
+        min-height: 44px !important;
     }
 
     div[class*="st-key-navback"] button:hover {
-        background-color: var(--hc-blue-dark) !important;
-        border-color: var(--hc-blue-dark) !important;
-        transform: translateX(-2px);
+        background-color: #D3E3F4 !important;
+        border-color: #D3E3F4 !important;
     }
 
-    /* 🏠 처음 화면: 흰 바탕 + 파란 테두리 */
+    /* 🏠 처음 화면: 테두리 버튼 */
     div[class*="st-key-navhome"] button {
         background-color: #FFFFFF !important;
-        color: var(--hc-blue) !important;
-        border: 2px solid var(--hc-blue) !important;
-        font-size: 15px !important;
-        font-weight: 700 !important;
-        min-height: 46px !important;
+        color: var(--hc-ink-2) !important;
+        border: 1px solid var(--hc-outline) !important;
+        min-height: 44px !important;
     }
 
     div[class*="st-key-navhome"] button:hover {
-        background-color: var(--hc-blue-soft) !important;
+        background-color: var(--hc-surface-2) !important;
+        color: var(--hc-blue) !important;
     }
 
-    /* 로그아웃: 회색, 마우스 올리면 빨간색 */
     div[class*="st-key-navlogout"] button {
         background-color: #FFFFFF !important;
         color: var(--hc-gray) !important;
-        border: 1px solid #C9D1DA !important;
-        font-weight: 700 !important;
-        min-height: 46px !important;
+        border: 1px solid var(--hc-line) !important;
+        min-height: 44px !important;
     }
 
     div[class*="st-key-navlogout"] button:hover {
-        color: var(--hc-red) !important;
+        color: var(--hc-red-ink) !important;
         border-color: var(--hc-red) !important;
-        background-color: #FFF5F4 !important;
+        background-color: var(--hc-red-tonal) !important;
     }
 
-    /* ===== 입력 요소 =====
-       Streamlit 버전마다 입력칸 구조가 달라서 신버전(1.6x)·구버전 경로를 함께 지정합니다.
-       - 신버전: stTextInputRootElement / stTextAreaRootElement / .stSelectbox [role="group"]
-       - 구버전: data-baseweb="input" / "textarea" / "select"                          */
+    div[class*="st-key-navback"] button p,
+    div[class*="st-key-navhome"] button p,
+    div[class*="st-key-navlogout"] button p {
+        font-size: 15px !important;
+        font-weight: 600 !important;
+    }
 
-    /* 입력칸 상자: 진한 테두리 + 흰 바탕 */
+    /* ===== 입력 요소 (구글형 테두리 입력칸) =====
+       신버전(1.6x): stTextInputRootElement / stTextAreaRootElement / .stSelectbox [role=group]
+       구버전: data-baseweb="input" / "textarea" / "select"                                   */
     div[data-testid="stTextInputRootElement"],
     div[data-testid="stTextAreaRootElement"],
     .stSelectbox div[role="group"],
@@ -497,9 +511,10 @@ st.markdown(
     div[data-baseweb="input"],
     div[data-baseweb="textarea"],
     div[data-baseweb="select"] > div {
-        border: 2px solid #9AA8B8 !important;
-        border-radius: 10px !important;
+        border: 1px solid var(--hc-outline) !important;
+        border-radius: 12px !important;
         background-color: #FFFFFF !important;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
     }
 
     div[data-testid="stTextInputRootElement"] *,
@@ -510,7 +525,13 @@ st.markdown(
         background-color: transparent !important;
     }
 
-    /* 입력 중일 때는 회사 파란색 테두리 */
+    div[data-testid="stTextInputRootElement"]:hover,
+    div[data-testid="stTextAreaRootElement"]:hover,
+    .stSelectbox div[role="group"]:hover {
+        border-color: var(--hc-ink) !important;
+    }
+
+    /* 입력 중: 파란 테두리를 두 겹으로(구글 방식) */
     div[data-testid="stTextInputRootElement"]:focus-within,
     div[data-testid="stTextAreaRootElement"]:focus-within,
     .stSelectbox div[role="group"]:focus-within,
@@ -519,10 +540,9 @@ st.markdown(
     div[data-baseweb="textarea"]:focus-within,
     div[data-baseweb="select"] > div:focus-within {
         border-color: var(--hc-blue) !important;
-        box-shadow: 0 0 0 3px rgba(0, 92, 171, 0.15) !important;
+        box-shadow: 0 0 0 1px var(--hc-blue) !important;
     }
 
-    /* 입력칸 안 글씨 크게 */
     div[data-testid="stTextInputRootElement"] input,
     div[data-testid="stTextAreaRootElement"] textarea,
     .stSelectbox div[role="group"] input,
@@ -535,149 +555,144 @@ st.markdown(
         color: var(--hc-ink) !important;
     }
 
-    /* 안내 문구(placeholder)는 연한 회색 유지 */
     div[data-testid="stTextInputRootElement"] input::placeholder,
     div[data-testid="stTextAreaRootElement"] textarea::placeholder {
-        color: #8A96A3 !important;
+        color: #8A8F94 !important;
     }
 
-    /* 드롭다운 펼쳤을 때 목록 글씨 */
     [role="listbox"] [role="option"],
     ul[role="listbox"] li,
     ul[role="listbox"] li div {
         font-size: 16.5px !important;
     }
 
-    /* 입력칸 위 항목명 (부서, 단위작업 등) */
     [data-testid="stWidgetLabel"] p,
     .stTextInput label,
     .stTextArea label,
     .stSelectbox label,
     .stDateInput label {
-        color: var(--hc-ink) !important;
-        font-weight: 700 !important;
+        color: var(--hc-ink-2) !important;
+        font-weight: 600 !important;
         font-size: 15px !important;
     }
 
-    /* ===== 컨테이너 카드 =====
-       카드마다 key="card_..." 이름표를 붙여서 그 이름표로 테두리를 겁니다.
-       (Streamlit 버전이 바뀌어도 적용되도록. 아래 BorderWrapper 는 구버전 대응용) */
+    /* ===== 카드 (key="card_...") : 얇고 또렷한 선, 그림자 없음 ===== */
     div[class*="st-key-card_"],
     div[data-testid="stVerticalBlockBorderWrapper"] {
         background-color: var(--hc-card);
-        border-radius: 14px !important;
-        border: 2px solid var(--hc-line) !important;
-        box-shadow: var(--hc-shadow);
+        border-radius: var(--hc-radius) !important;
+        border: 1px solid var(--hc-line) !important;
+        box-shadow: none;
     }
 
-    /* ===== 페이지 헤더 ===== */
+    /* 제보 입력·처리 관리처럼 큰 입력 카드는 안쪽 여백 넉넉하게 */
+    div[class*="st-key-card_report_form"],
+    div[class*="st-key-card_process"],
+    div[class*="st-key-card_login"] {
+        padding: 12px 10px !important;
+    }
+
+    /* 목록 카드: 마우스 올리면 살짝 떠오름 */
+    div[class*="st-key-card_row_"] {
+        transition: box-shadow 0.15s ease, border-color 0.15s ease;
+    }
+
+    div[class*="st-key-card_row_"]:hover {
+        box-shadow: var(--hc-hover-shadow);
+        border-color: transparent !important;
+    }
+
+    /* ===== 페이지 제목: 상자 없이 글자로만 ===== */
     .page-head {
         display: flex;
         align-items: center;
-        gap: 18px;
-        background: linear-gradient(100deg, #FFFFFF 55%, var(--hc-blue-soft) 100%);
-        border: 2px solid var(--hc-line);
-        border-left: 6px solid var(--hc-blue);
-        border-radius: 14px;
-        padding: 20px 26px;
-        margin-bottom: 22px;
-        box-shadow: var(--hc-shadow);
+        gap: 16px;
+        margin: 0 0 24px 0;
+        padding: 0;
+        background: none;
+        border: none;
+        box-shadow: none;
     }
 
     .page-head img {
-        height: 38px;
+        height: 30px;
         object-fit: contain;
     }
 
     .page-head .ph-div {
         width: 1px;
-        height: 38px;
-        background-color: #C3CFDB;
+        height: 30px;
+        background-color: var(--hc-line);
     }
 
     .page-head .ph-title {
-        color: var(--hc-blue);
-        font-size: 25px;
-        font-weight: 800;
+        color: var(--hc-ink);
+        font-size: 28px;
+        font-weight: 700;
         line-height: 1.25;
-        letter-spacing: -0.6px;
+        letter-spacing: -0.8px;
     }
 
     .page-head .ph-sub {
         color: var(--hc-gray);
-        font-size: 14px;
+        font-size: 15px;
         margin-top: 4px;
     }
 
-    /* ===== 홈 헤더 ===== */
+    /* ===== 홈 ===== */
     .home-header {
         display: flex;
         justify-content: center;
         align-items: center;
-        gap: 14px;
-        margin: 18px 0 26px 0;
+        gap: 18px;
+        margin: 18px 0 30px 0;
         flex-wrap: wrap;
     }
 
     .home-header img {
-        height: 44px;
+        height: 42px;
         object-fit: contain;
     }
 
     .home-header .home-div {
         width: 1px;
-        height: 42px;
-        background-color: #C3CFDB;
-        margin: 0 6px;
+        height: 38px;
+        background-color: var(--hc-line);
     }
 
     .home-header .home-title {
-        color: var(--hc-blue);
-        font-size: 44px;
+        color: var(--hc-ink);
+        font-size: 42px;
         font-weight: 800;
         line-height: 1.2;
         letter-spacing: -1.6px;
         margin: 0;
     }
 
-    .home-info {
-        text-align: center;
-        color: var(--hc-gray);
-        font-size: 16px;
-        line-height: 1.7;
-        margin-bottom: 22px;
-    }
-
-    /* ===== 홈 진입 카드 ===== */
     div[class*="st-key-card_home"] {
-        border: 3px solid #7FA8D1 !important;
-        border-radius: 20px !important;
+        border: 1px solid var(--hc-line) !important;
+        border-radius: 24px !important;
         background-color: #FFFFFF;
-        box-shadow: 0 6px 20px rgba(0, 92, 171, 0.12);
-        transition: all 0.18s ease;
+        box-shadow: none;
+        transition: box-shadow 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
     }
 
     div[class*="st-key-card_home"]:hover {
-        border-color: var(--hc-blue) !important;
-        box-shadow: 0 10px 28px rgba(0, 92, 171, 0.18);
-        transform: translateY(-3px);
-    }
-
-    .home-card-mark {
-        display: none;
+        border-color: transparent !important;
+        box-shadow: 0 2px 6px rgba(60, 64, 67, 0.15), 0 8px 24px rgba(60, 64, 67, 0.12);
+        transform: translateY(-2px);
     }
 
     .home-photo {
         width: 100%;
         aspect-ratio: 4 / 3;
-        border-radius: 14px;
+        border-radius: 16px;
         overflow: hidden;
-        background-color: var(--hc-blue-soft);
+        background-color: var(--hc-surface-2);
         display: flex;
         justify-content: center;
         align-items: center;
         font-size: 90px;
-        margin-bottom: 4px;
     }
 
     .home-photo img {
@@ -691,137 +706,113 @@ st.markdown(
         text-align: center;
         color: var(--hc-gray);
         font-size: 14.5px;
-        margin: 8px 0 4px 0;
+        margin: 6px 0 2px 0;
+    }
+
+    .home-card-mark {
+        display: none;
     }
 
     .st-key-worker_button button,
     .st-key-admin_button button {
-        min-height: 70px !important;
+        min-height: 60px !important;
     }
 
     .st-key-worker_button button p,
-    .st-key-admin_button button p,
-    .st-key-worker_button button div,
-    .st-key-admin_button button div {
-        font-size: 28px !important;
+    .st-key-admin_button button p {
+        font-size: 22px !important;
         font-weight: 700 !important;
-        letter-spacing: 4px !important;
-        line-height: 1.3 !important;
+        letter-spacing: 2px !important;
         margin: 0 !important;
     }
 
     /* ===== 근로자 메뉴 카드버튼 ===== */
     .st-key-menu_report button,
     .st-key-menu_status button {
-        min-height: 180px !important;
-        font-size: 16px !important;
-        font-weight: 500 !important;
-        letter-spacing: 0 !important;
-        line-height: 1.6 !important;
+        min-height: 170px !important;
         white-space: pre-line !important;
-        padding: 26px 24px !important;
-        border: 2px solid var(--hc-blue-line) !important;
-        border-top: 6px solid var(--hc-blue) !important;
-        border-radius: 18px !important;
+        padding: 28px 24px !important;
+        border: 1px solid var(--hc-line) !important;
+        border-radius: 24px !important;
         background-color: #FFFFFF !important;
-        color: var(--hc-blue) !important;
-        box-shadow: 0 4px 14px rgba(0, 92, 171, 0.08) !important;
+        color: var(--hc-ink) !important;
+        box-shadow: none !important;
+        transition: box-shadow 0.2s ease, transform 0.2s ease, border-color 0.2s ease !important;
     }
 
     .st-key-menu_report button:hover,
     .st-key-menu_status button:hover {
-        background-color: var(--hc-blue) !important;
-        color: #FFFFFF !important;
-        border-color: var(--hc-blue) !important;
-        box-shadow: 0 8px 22px rgba(0, 92, 171, 0.28) !important;
-        transform: translateY(-3px);
+        background-color: #FFFFFF !important;
+        color: var(--hc-ink) !important;
+        border-color: transparent !important;
+        box-shadow: 0 2px 6px rgba(60, 64, 67, 0.15), 0 8px 24px rgba(60, 64, 67, 0.12) !important;
+        transform: translateY(-2px);
     }
 
     .st-key-menu_report button strong,
     .st-key-menu_status button strong {
         display: block;
-        font-size: 30px !important;
-        font-weight: 800 !important;
-        letter-spacing: -0.5px !important;
+        font-size: 26px !important;
+        font-weight: 700 !important;
+        letter-spacing: -0.6px !important;
         line-height: 1.3 !important;
-        margin-bottom: 10px;
+        margin-bottom: 8px;
+        color: var(--hc-blue);
     }
 
     .st-key-menu_report button p,
     .st-key-menu_status button p {
-        font-size: 16px !important;
+        font-size: 15.5px !important;
         font-weight: 500 !important;
         line-height: 1.6 !important;
         margin: 0 !important;
-        opacity: 0.85;
+        color: var(--hc-gray);
     }
 
-    .st-key-menu_report button p:has(strong),
-    .st-key-menu_status button p:has(strong) {
-        opacity: 1;
-    }
-
-    /* 제보 등록 버튼은 크게 (버튼 안 글씨 p 까지 지정해야 신버전에서 적용됨) */
+    /* 등록·로그인 버튼 */
     .st-key-submit_report button,
     .st-key-login_button button {
-        min-height: 56px !important;
+        min-height: 54px !important;
     }
 
     .st-key-submit_report button p,
     .st-key-login_button button p {
-        font-size: 19px !important;
-        font-weight: 800 !important;
-        letter-spacing: 1px !important;
-    }
-
-    /* 상단·하단 이동 버튼 글씨 */
-    div[class*="st-key-navback"] button p,
-    div[class*="st-key-navhome"] button p,
-    div[class*="st-key-navlogout"] button p {
-        font-size: 15.5px !important;
+        font-size: 18px !important;
         font-weight: 700 !important;
+        letter-spacing: 0.5px !important;
     }
 
-    /* ===== 통계 카드 ===== */
+    /* ===== 통계: 연회색 면 타일 ===== */
     .stat-wrap {
-        background-color: #FFFFFF;
-        border: 2px solid var(--hc-line);
-        border-radius: 14px;
-        padding: 16px 18px 14px 18px;
-        box-shadow: var(--hc-shadow);
-        position: relative;
-        overflow: hidden;
+        background-color: var(--hc-surface-2);
+        border: none;
+        border-radius: var(--hc-radius);
+        padding: 18px 20px;
     }
 
     .stat-wrap .stat-bar {
-        position: absolute;
-        left: 0;
-        top: 0;
-        right: 0;
-        height: 4px;
+        display: none;
     }
 
     .stat-wrap .stat-label {
         color: var(--hc-gray);
-        font-size: 13px;
-        font-weight: 700;
-        letter-spacing: 0.3px;
+        font-size: 14px;
+        font-weight: 600;
         display: flex;
         align-items: center;
-        gap: 7px;
-        margin-top: 2px;
+        gap: 8px;
     }
 
     .stat-wrap .stat-dot {
-        width: 9px;
-        height: 9px;
+        width: 8px;
+        height: 8px;
         border-radius: 999px;
         display: inline-block;
     }
 
     .stat-wrap .stat-value {
         font-size: 32px;
-        font-weight: 800;
+        font-weight: 700;
         line-height: 1.15;
         margin-top: 8px;
         letter-spacing: -1px;
@@ -829,51 +820,52 @@ st.markdown(
 
     .stat-wrap .stat-unit {
         font-size: 15px;
-        font-weight: 600;
+        font-weight: 500;
         margin-left: 3px;
         color: var(--hc-gray);
     }
 
     /* ===== 목록 행 ===== */
     .row-wrap {
-        border-left: 4px solid var(--hc-line);
-        padding-left: 14px;
+        padding-left: 4px;
     }
 
     .row-top {
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 6px;
         flex-wrap: wrap;
-        margin: 2px 0 8px 0;
+        margin: 2px 0 10px 0;
     }
 
     .chip {
-        font-size: 12px;
-        font-weight: 700;
-        padding: 4px 11px;
-        border-radius: 999px;
+        font-size: 12.5px;
+        font-weight: 600;
+        padding: 4px 10px;
+        border-radius: 8px;
         white-space: nowrap;
-        letter-spacing: 0.2px;
     }
 
     .chip-status {
-        color: #FFFFFF;
+        font-weight: 700;
     }
 
     .chip-id {
-        background-color: var(--hc-blue-soft);
-        color: var(--hc-blue);
+        background-color: transparent;
+        color: var(--hc-gray);
+        padding-left: 4px;
+        padding-right: 4px;
     }
 
     .chip-tag {
-        background-color: var(--hc-gray-soft);
-        color: var(--hc-gray);
+        background-color: var(--hc-surface-2);
+        color: var(--hc-ink-2);
+        border: 1px solid var(--hc-line-soft);
     }
 
     .row-body {
         color: var(--hc-ink);
-        font-size: 15.5px;
+        font-size: 16px;
         font-weight: 500;
         line-height: 1.6;
         word-break: break-word;
@@ -881,19 +873,17 @@ st.markdown(
 
     .row-meta {
         color: var(--hc-gray);
-        font-size: 12.5px;
+        font-size: 13px;
         margin-top: 8px;
-        margin-bottom: 4px;
+        margin-bottom: 2px;
     }
 
     /* ===== 정보 카드 ===== */
     .info-card {
-        border: 2px solid var(--hc-line);
-        border-top: 5px solid var(--hc-blue);
-        border-radius: 14px;
+        border: 1px solid var(--hc-line);
+        border-radius: var(--hc-radius);
         background-color: #FFFFFF;
-        padding: 22px 28px 8px 28px;
-        box-shadow: var(--hc-shadow);
+        padding: 22px 26px 8px 26px;
         margin-bottom: 12px;
     }
 
@@ -902,23 +892,21 @@ st.markdown(
         justify-content: space-between;
         align-items: center;
         padding-bottom: 14px;
-        border-bottom: 2px solid var(--hc-gray-soft);
+        border-bottom: 1px solid var(--hc-line-soft);
         margin-bottom: 4px;
     }
 
     .info-card-title {
-        color: var(--hc-blue);
-        font-size: 20px;
-        font-weight: 800;
+        color: var(--hc-ink);
+        font-size: 19px;
+        font-weight: 700;
         letter-spacing: -0.3px;
     }
 
     .info-badge {
-        color: #FFFFFF;
-        font-size: 13px;
+        font-size: 13.5px;
         font-weight: 700;
-        letter-spacing: 0.8px;
-        padding: 6px 16px;
+        padding: 6px 14px;
         border-radius: 999px;
         white-space: nowrap;
     }
@@ -934,7 +922,7 @@ st.markdown(
         align-items: baseline;
         gap: 14px;
         padding: 14px 2px;
-        border-bottom: 1px solid var(--hc-gray-soft);
+        border-bottom: 1px solid var(--hc-line-soft);
     }
 
     .info-item.full {
@@ -948,10 +936,9 @@ st.markdown(
 
     .info-item .k {
         color: var(--hc-gray);
-        font-size: 12.5px;
-        font-weight: 700;
-        letter-spacing: 0.4px;
-        width: 88px;
+        font-size: 13.5px;
+        font-weight: 500;
+        width: 80px;
         flex-shrink: 0;
     }
 
@@ -962,34 +949,27 @@ st.markdown(
         word-break: break-word;
     }
 
-    /* ===== 내용 / 결과 박스 ===== */
+    /* ===== 내용 / 결과 박스: 색 띠 없이 연한 면 ===== */
     .text-box {
-        border: 2px solid var(--hc-line);
-        border-left: 5px solid var(--hc-gray);
-        border-radius: 12px;
-        background-color: #FFFFFF;
+        border: none;
+        border-radius: var(--hc-radius);
+        background-color: var(--hc-surface-2);
         padding: 18px 22px;
         margin-bottom: 10px;
-        box-shadow: 0 1px 2px rgba(16, 24, 40, 0.03);
     }
 
     .text-box.blue {
-        border-left-color: var(--hc-blue);
-        border-color: var(--hc-blue-line);
-        background-color: #F8FBFE;
+        background-color: #F1F6FC;
     }
 
     .text-box.green {
-        border-left-color: var(--hc-green);
-        border-color: #D7EADD;
-        background-color: #F6FBF7;
+        background-color: var(--hc-green-tonal);
     }
 
     .text-box .tb-head {
-        font-size: 12.5px;
-        font-weight: 800;
-        letter-spacing: 0.6px;
-        margin-bottom: 10px;
+        font-size: 13px;
+        font-weight: 700;
+        margin-bottom: 8px;
         color: var(--hc-gray);
     }
 
@@ -998,37 +978,37 @@ st.markdown(
     }
 
     .text-box.green .tb-head {
-        color: var(--hc-green);
+        color: var(--hc-green-ink);
     }
 
     .text-box .tb-body {
         color: var(--hc-ink);
         font-size: 16px;
-        line-height: 1.85;
+        line-height: 1.8;
         white-space: pre-line;
         word-break: break-word;
     }
 
     .ai-warn {
-        color: var(--hc-amber);
-        background-color: #FFF8EE;
-        border: 1px solid #F2DFC2;
-        border-radius: 10px;
-        padding: 11px 15px;
-        font-size: 13px;
+        color: var(--hc-amber-ink);
+        background-color: var(--hc-amber-tonal);
+        border: none;
+        border-radius: 12px;
+        padding: 12px 16px;
+        font-size: 13.5px;
         font-weight: 600;
         margin-bottom: 14px;
     }
 
-    /* ===== 섹션 제목 ===== */
+    /* ===== 섹션 제목: 막대 없이 글자로만 ===== */
     .sec-title {
         color: var(--hc-ink);
-        font-size: 18px;
-        font-weight: 800;
-        letter-spacing: -0.3px;
-        margin: 28px 0 12px 0;
-        padding-left: 12px;
-        border-left: 4px solid var(--hc-blue);
+        font-size: 19px;
+        font-weight: 700;
+        letter-spacing: -0.4px;
+        margin: 34px 0 12px 2px;
+        padding: 0;
+        border: none;
         line-height: 1.3;
     }
 
@@ -1037,54 +1017,50 @@ st.markdown(
         min-height: 30px;
     }
 
-    /* ===== 긴급 연락처 배너 ===== */
-    /* 한 줄 구성: 왼쪽 제목 / 오른쪽 전화 버튼 */
+    /* ===== 긴급 연락처: 연한 빨강 면 + 알약 버튼 ===== */
     .emg-box {
         display: flex;
         align-items: center;
         justify-content: space-between;
         gap: 20px;
-        background-color: #FFF5F4;
-        border: 2px solid #F3B7B1;
-        border-left: 8px solid var(--hc-red);
-        border-radius: 14px;
-        padding: 16px 20px 16px 24px;
-        margin: 6px 0 18px 0;
+        background-color: var(--hc-red-tonal);
+        border: none;
+        border-radius: 20px;
+        padding: 14px 14px 14px 26px;
+        margin: 4px 0 20px 0;
     }
 
     .emg-box .emg-title {
         display: flex;
         align-items: center;
         gap: 10px;
-        color: var(--hc-red);
-        font-size: 24px;
-        font-weight: 800;
-        letter-spacing: -0.6px;
+        color: var(--hc-red-ink);
+        font-size: 21px;
+        font-weight: 700;
+        letter-spacing: -0.5px;
         line-height: 1.3;
     }
 
     .emg-box .emg-call {
         display: inline-flex;
         align-items: center;
-        gap: 12px;
+        gap: 10px;
         flex-shrink: 0;
         background-color: var(--hc-red);
         color: #FFFFFF !important;
         text-decoration: none !important;
-        font-size: 22px;
-        font-weight: 800;
-        letter-spacing: 0.5px;
-        padding: 10px 24px 10px 10px;
+        font-size: 20px;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        padding: 8px 22px 8px 8px;
         border-radius: 999px;
         white-space: nowrap;
-        box-shadow: 0 4px 12px rgba(217, 48, 37, 0.30);
-        transition: all 0.15s ease;
+        transition: background-color 0.15s ease, box-shadow 0.15s ease;
     }
 
-    /* 전화 아이콘: 흰 원 안에 빨간 수화기 → 버튼색과 확실히 구분 */
     .emg-box .emg-icon {
-        width: 38px;
-        height: 38px;
+        width: 36px;
+        height: 36px;
         border-radius: 999px;
         background-color: #FFFFFF;
         display: inline-flex;
@@ -1094,26 +1070,31 @@ st.markdown(
     }
 
     .emg-box .emg-icon svg {
-        width: 20px;
-        height: 20px;
+        width: 19px;
+        height: 19px;
         fill: var(--hc-red);
     }
 
     .emg-box .emg-call:hover {
-        background-color: #B3261E;
-        transform: translateY(-1px);
+        background-color: var(--hc-red-ink);
+        box-shadow: 0 2px 8px rgba(179, 38, 30, 0.35);
     }
 
     .list-count {
         color: var(--hc-gray);
-        font-size: 13.5px;
-        font-weight: 600;
-        margin: 4px 0 12px 0;
+        font-size: 14px;
+        font-weight: 500;
+        margin: 4px 0 12px 2px;
     }
 
     .list-count b {
-        color: var(--hc-blue);
-        font-size: 15px;
+        color: var(--hc-ink);
+        font-weight: 700;
+    }
+
+    /* ===== Streamlit 알림창(등록 완료 등)도 같은 톤으로 ===== */
+    div[data-testid="stAlert"] {
+        border-radius: 12px !important;
     }
 
     /* ===== 모바일 ===== */
@@ -1130,44 +1111,40 @@ st.markdown(
         }
 
         .home-header img {
-            height: 29px;
+            height: 28px;
         }
 
         .home-header .home-title {
-            font-size: 27px;
+            font-size: 28px;
+        }
+
+        .home-header .home-div {
+            height: 26px;
         }
 
         .home-photo {
             font-size: 66px;
         }
 
-        .home-header .home-div {
-            height: 28px;
-        }
-
         .st-key-worker_button button,
         .st-key-admin_button button {
-            min-height: 60px !important;
+            min-height: 54px !important;
         }
 
         .st-key-worker_button button p,
-        .st-key-admin_button button p,
-        .st-key-worker_button button div,
-        .st-key-admin_button button div {
-            font-size: 23px !important;
-            letter-spacing: 3px !important;
+        .st-key-admin_button button p {
+            font-size: 20px !important;
         }
 
         .st-key-menu_report button,
         .st-key-menu_status button {
-            min-height: 140px !important;
+            min-height: 130px !important;
             padding: 20px 16px !important;
         }
 
         .st-key-menu_report button strong,
         .st-key-menu_status button strong {
-            font-size: 23px !important;
-            margin-bottom: 7px;
+            font-size: 22px !important;
         }
 
         .st-key-menu_report button p,
@@ -1176,20 +1153,19 @@ st.markdown(
         }
 
         .page-head {
-            padding: 14px 16px;
             gap: 12px;
         }
 
         .page-head img {
-            height: 28px;
+            height: 24px;
         }
 
         .page-head .ph-div {
-            height: 28px;
+            height: 24px;
         }
 
         .page-head .ph-title {
-            font-size: 20px;
+            font-size: 22px;
         }
 
         .info-card {
@@ -1208,17 +1184,17 @@ st.markdown(
             flex-direction: column;
             align-items: stretch;
             gap: 12px;
-            padding: 14px 16px;
+            padding: 16px;
         }
 
         .emg-box .emg-title {
-            font-size: 20px;
+            font-size: 19px;
             justify-content: center;
         }
 
         .emg-box .emg-call {
             justify-content: center;
-            font-size: 21px;
+            font-size: 20px;
         }
 
         .login-space {
@@ -1473,11 +1449,26 @@ def 상태표시(상태):
 
 
 def 상태색(상태):
+    # 진한 글씨색 (통계 숫자, 점 색 등)
     return {
-        "미조치": "#D93025",
-        "조치중": "#C97A0A",
-        "조치완료": "#1E8E3E"
-    }.get(상태, "#717073")
+        "미조치": "#B3261E",
+        "조치중": "#9A5B00",
+        "조치완료": "#137333"
+    }.get(상태, "#5E6368")
+
+
+def 상태톤(상태):
+    # 상태 칩용: (연한 바탕색, 진한 글씨색)
+    return {
+        "미조치": ("#FCE8E6", "#B3261E"),
+        "조치중": ("#FEF3D6", "#9A5B00"),
+        "조치완료": ("#E6F4EA", "#137333")
+    }.get(상태, ("#F1F3F4", "#5E6368"))
+
+
+def 상태칩스타일(상태):
+    바탕, 글씨 = 상태톤(상태)
+    return f"background-color:{바탕};color:{글씨};"
 
 
 def 페이지헤더(제목, 부제=""):
