@@ -1116,112 +1116,134 @@ st.markdown(
         border-radius: 12px !important;
     }
 
-    /* ===== 폴더형 탭 (근로자 화면) =====
-       왼쪽: 색인 탭 / 오른쪽: 폴더 본문
-       제보하기 = 회사 파랑, 처리현황 = 초록                              */
+    /* ===== 종이 폴더 (근로자 화면) =====
+       색이 있는 폴더 겉판 + 위로 튀어나온 색인 탭 + 안에 흰 종이 한 장
+       제보하기 = 파란 폴더, 처리현황 = 초록 폴더                          */
+    :root {
+        --folder-blue:       #CFE0F2;   /* 파란 폴더 겉판 */
+        --folder-blue-ink:   #0B4F8C;
+        --folder-blue-back:  #E6EFF8;   /* 뒤에 꽂힌 파란 탭 */
+        --folder-green:      #CDE8D4;
+        --folder-green-ink:  #146C2E;
+        --folder-green-back: #E5F3E9;
+    }
+
+    /* 탭 줄: 폴더 겉판에 바로 붙도록 아래 간격 제거 */
     .st-key-folder_tabs {
-        gap: 10px !important;
-        padding-top: 22px;
-    }
-
-    .st-key-tab_report button,
-    .st-key-tab_status button {
-        min-height: 74px !important;
-        border-radius: 16px 0 0 16px !important;
-        border: 1px solid var(--hc-line) !important;
-        border-right: none !important;
-        background-color: var(--hc-surface-2) !important;
-        color: var(--hc-gray) !important;
-        padding-left: 20px !important;
+        margin-bottom: -1rem;
         position: relative;
-        transition: background-color 0.15s ease, color 0.15s ease !important;
+        z-index: 2;
     }
 
-    .st-key-tab_report button div,
-    .st-key-tab_status button div {
-        justify-content: flex-start !important;
+    .st-key-folder_tabs [data-testid="stHorizontalBlock"] {
+        gap: 6px !important;
+        align-items: flex-end;
+        padding-left: 18px;
+    }
+
+    /* 탭 공통: 위쪽만 둥근 종이 탭 (일반 버튼 테두리·클릭 테두리 제거) */
+    .st-key-tab_report button,
+    .st-key-tab_status button,
+    .st-key-tab_report button[kind="primary"],
+    .st-key-tab_status button[kind="primary"],
+    .st-key-tab_report button:focus,
+    .st-key-tab_status button:focus,
+    .st-key-tab_report button:focus-visible,
+    .st-key-tab_status button:focus-visible {
+        outline: none !important;
+    }
+
+    .stButton.st-key-tab_report > button,
+    .stButton.st-key-tab_status > button,
+    div.st-key-tab_report button[kind],
+    div.st-key-tab_status button[kind] {
+        border: none !important;
+        border-radius: 16px 16px 0 0 !important;
+        box-shadow: none !important;
+        transition: background-color 0.15s ease, min-height 0.15s ease !important;
     }
 
     .st-key-tab_report button p,
     .st-key-tab_status button p {
         font-size: 17px !important;
         font-weight: 700 !important;
-        text-align: left !important;
         white-space: nowrap;
     }
 
-    /* 선택 안 된 탭: 왼쪽에 탭 색 표시 */
+    /* 선택된 탭: 폴더 겉판과 같은 색 → 한 장으로 이어짐 */
+    .st-key-tab_report button[kind="primary"],
+    .st-key-tab_report button[kind="primary"]:hover {
+        background-color: var(--folder-blue) !important;
+        color: var(--folder-blue-ink) !important;
+        min-height: 58px !important;
+    }
+
+    .st-key-tab_status button[kind="primary"],
+    .st-key-tab_status button[kind="primary"]:hover {
+        background-color: var(--folder-green) !important;
+        color: var(--folder-green-ink) !important;
+        min-height: 58px !important;
+    }
+
+    /* 선택 안 된 탭: 뒤에 꽂힌 다른 폴더처럼 낮고 연하게 */
     .st-key-tab_report button[kind="secondary"] {
-        box-shadow: inset 5px 0 0 var(--hc-blue) !important;
+        background-color: var(--folder-blue-back) !important;
+        color: #6B7F93 !important;
+        min-height: 48px !important;
     }
 
     .st-key-tab_status button[kind="secondary"] {
-        box-shadow: inset 5px 0 0 #188038 !important;
+        background-color: var(--folder-green-back) !important;
+        color: #6A8573 !important;
+        min-height: 48px !important;
     }
 
-    .st-key-tab_report button[kind="secondary"]:hover,
+    .st-key-tab_report button[kind="secondary"]:hover {
+        background-color: #DCE8F5 !important;
+        color: var(--folder-blue-ink) !important;
+    }
+
     .st-key-tab_status button[kind="secondary"]:hover {
-        background-color: #ECEFF3 !important;
-        color: var(--hc-ink) !important;
+        background-color: #D9EEDF !important;
+        color: var(--folder-green-ink) !important;
     }
 
-    /* 선택된 탭: 탭 색으로 채우고 오른쪽 본문까지 이어지게 */
-    .st-key-tab_report button[kind="primary"],
-    .st-key-tab_status button[kind="primary"] {
-        color: #FFFFFF !important;
-        width: calc(100% + 18px) !important;
-        margin-right: -18px;
-        z-index: 2;
-        box-shadow: none !important;
-    }
-
-    .st-key-tab_report button[kind="primary"] {
-        background-color: var(--hc-blue) !important;
-        border-color: var(--hc-blue) !important;
-    }
-
-    .st-key-tab_status button[kind="primary"] {
-        background-color: #188038 !important;
-        border-color: #188038 !important;
-    }
-
-    /* 마우스를 올려도 선택된 탭 색이 유지되도록 */
-    .stButton.st-key-tab_report > button[kind="primary"]:hover,
-    .st-key-tab_report button[kind="primary"]:hover {
-        background-color: var(--hc-blue) !important;
-        border-color: var(--hc-blue) !important;
-        box-shadow: none !important;
-    }
-
-    .stButton.st-key-tab_status > button[kind="primary"]:hover,
-    .st-key-tab_status button[kind="primary"]:hover {
-        background-color: #188038 !important;
-        border-color: #188038 !important;
-        box-shadow: none !important;
-    }
-
-    /* 폴더 본문: 선택된 탭과 같은 색 테두리 */
+    /* 폴더 겉판: 화면 폭 전체(위 구분선 양 끝과 맞춤) */
     .st-key-folder_panel_report,
     .st-key-folder_panel_status {
-        border: 2px solid var(--hc-blue);
+        background-color: var(--folder-blue);
+        border: none;
         border-radius: 22px;
-        padding: 30px 32px 32px 32px !important;
-        background-color: #FFFFFF;
-        min-height: 620px;
+        padding: 14px !important;
+        box-shadow: 0 1px 2px rgba(60, 64, 67, 0.12), 0 6px 16px rgba(60, 64, 67, 0.08);
     }
 
     .st-key-folder_panel_status {
-        border-color: #188038;
+        background-color: var(--folder-green);
     }
 
-    /* 폴더 안에서는 상자 안의 상자가 생기지 않도록 안쪽 카드 테두리 제거 */
-    .st-key-folder_panel_report div[class*="st-key-card_report_form"] {
+    /* 폴더 안 흰 종이: 뒤에 종이가 몇 장 더 있는 것처럼 아래쪽에 겹친 선 */
+    .st-key-folder_paper {
+        background-color: #FFFFFF;
+        border-radius: 14px;
+        padding: 30px 34px 34px 34px !important;
+        min-height: 560px;
+        box-shadow:
+            0 1px 2px rgba(60, 64, 67, 0.16),
+            0 5px 0 -2px #F4F4F1,
+            0 5px 1px -1px rgba(60, 64, 67, 0.14),
+            0 10px 0 -4px #EDEDE8,
+            0 10px 1px -3px rgba(60, 64, 67, 0.10);
+    }
+
+    /* 종이 안에서는 상자 안의 상자가 생기지 않도록 정리 */
+    .st-key-folder_paper div[class*="st-key-card_report_form"] {
         border: none !important;
         padding: 0 !important;
         box-shadow: none !important;
     }
 
-    .st-key-folder_panel_status div[class*="st-key-card_status_filter"] {
+    .st-key-folder_paper div[class*="st-key-card_status_filter"] {
         border: none !important;
         background-color: var(--hc-surface-2) !important;
     }
@@ -1235,53 +1257,46 @@ st.markdown(
     /* ===== 모바일 ===== */
     @media (max-width: 768px) {
 
-        /* 폴더 탭: 휴대폰에서는 위쪽 가로 탭 */
-        .st-key-folder_tabs {
-            flex-direction: row !important;
-            padding-top: 0;
-            gap: 8px !important;
+        /* 종이 폴더: 휴대폰에서도 탭은 위쪽 가로 (세로로 쌓이지 않게) */
+        .st-key-folder_tabs [data-testid="stHorizontalBlock"] {
+            flex-wrap: nowrap !important;
+            padding-left: 10px;
         }
 
-        .st-key-folder_tabs > div {
-            flex: 1 1 0 !important;
+        .st-key-folder_tabs [data-testid="stColumn"] {
+            min-width: 0 !important;
             width: auto !important;
+            flex: 1 1 0 !important;
         }
 
-        .st-key-tab_report button,
-        .st-key-tab_status button,
-        .st-key-tab_report button[kind="primary"],
-        .st-key-tab_status button[kind="primary"] {
-            min-height: 54px !important;
-            width: 100% !important;
-            margin-right: 0;
-            border-radius: 14px !important;
-            border-right: 1px solid var(--hc-line) !important;
-            padding-left: 12px !important;
-        }
-
-        .st-key-tab_report button div,
-        .st-key-tab_status button div {
-            justify-content: center !important;
-        }
-
-        .st-key-tab_report button[kind="secondary"] {
-            box-shadow: inset 0 -4px 0 var(--hc-blue) !important;
-        }
-
-        .st-key-tab_status button[kind="secondary"] {
-            box-shadow: inset 0 -4px 0 #188038 !important;
+        .st-key-folder_tabs [data-testid="stColumn"]:last-child {
+            display: none !important;
         }
 
         .st-key-tab_report button p,
         .st-key-tab_status button p {
-            font-size: 16px !important;
+            font-size: 15.5px !important;
+        }
+
+        .st-key-tab_report button[kind="primary"],
+        .st-key-tab_status button[kind="primary"] {
+            min-height: 52px !important;
+        }
+
+        .st-key-tab_report button[kind="secondary"],
+        .st-key-tab_status button[kind="secondary"] {
+            min-height: 44px !important;
         }
 
         .st-key-folder_panel_report,
         .st-key-folder_panel_status {
-            padding: 20px 16px !important;
-            min-height: 0;
+            padding: 8px !important;
             border-radius: 18px;
+        }
+
+        .st-key-folder_paper {
+            padding: 20px 16px 24px 16px !important;
+            min-height: 0;
         }
 
         .block-container {
@@ -2086,12 +2101,12 @@ elif st.session_state.화면 in ("근로자메뉴", "제보", "처리현황"):
         홈버튼=False
     )
 
-    탭칸, 본문칸 = st.columns([1.1, 5], gap="small")
+    # 위쪽 색인 탭 (폴더 위로 튀어나온 탭)
+    with st.container(key="folder_tabs"):
 
-    with 탭칸:
+        탭1, 탭2, 탭여백 = st.columns([1.3, 1.3, 4.4], gap="small", vertical_alignment="bottom")
 
-        with st.container(key="folder_tabs"):
-
+        with 탭1:
             st.button(
                 "📝  제보하기",
                 key="tab_report",
@@ -2100,6 +2115,7 @@ elif st.session_state.화면 in ("근로자메뉴", "제보", "처리현황"):
                 use_container_width=True
             )
 
+        with 탭2:
             st.button(
                 "📋  처리현황",
                 key="tab_status",
@@ -2108,11 +2124,12 @@ elif st.session_state.화면 in ("근로자메뉴", "제보", "처리현황"):
                 use_container_width=True
             )
 
-    with 본문칸:
+    패널키 = "folder_panel_report" if 현재탭 == "제보" else "folder_panel_status"
 
-        패널키 = "folder_panel_report" if 현재탭 == "제보" else "folder_panel_status"
+    # 폴더 겉판(색) → 그 안에 흰 종이 한 장
+    with st.container(key=패널키):
 
-        with st.container(key=패널키):
+        with st.container(key="folder_paper"):
 
             # -------------------------------------------------
             # 탭 1. 제보하기
