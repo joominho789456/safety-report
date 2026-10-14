@@ -1724,6 +1724,26 @@ def 제보행(제보, 버튼키, 부서표시=True, 요약길이=110):
 
 if st.session_state.화면 == "홈":
 
+    # 홈 화면 전용: PC(가로 769px 이상)에서만 내용을 화면 상하 중앙에 배치
+    # 휴대폰 화면과 다른 페이지에는 영향 없음
+    st.markdown(
+        """
+        <style>
+        @media (min-width: 769px) {
+            .block-container {
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                padding-top: 0 !important;
+                padding-bottom: 0 !important;
+            }
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
     홈로고 = f'<img src="{logo_image}">' if logo_image else ""
     홈구분 = '<span class="home-div"></span>' if logo_image else ""
 
