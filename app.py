@@ -334,7 +334,7 @@ st.markdown(
         --hc-gray-soft:   #F1F3F5;
         --hc-line:        #E1E6EC;
         --hc-ink:         #1A1D21;
-        --hc-bg:          #F4F7FA;
+        --hc-bg:          #FFFFFF;
         --hc-card:        #FFFFFF;
         --hc-red:         #D93025;
         --hc-amber:       #C97A0A;
@@ -979,50 +979,70 @@ st.markdown(
     }
 
     /* ===== 긴급 연락처 배너 ===== */
+    /* 한 줄 구성: 왼쪽 제목 / 오른쪽 전화 버튼 */
     .emg-box {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 16px;
-        flex-wrap: wrap;
+        gap: 20px;
         background-color: #FFF5F4;
-        border: 1px solid #F5C6C2;
-        border-left: 6px solid var(--hc-red);
+        border: 2px solid #F3B7B1;
+        border-left: 8px solid var(--hc-red);
         border-radius: 14px;
-        padding: 16px 22px;
+        padding: 16px 20px 16px 24px;
         margin: 6px 0 18px 0;
     }
 
     .emg-box .emg-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
         color: var(--hc-red);
-        font-size: 17px;
+        font-size: 24px;
         font-weight: 800;
-        letter-spacing: -0.3px;
-    }
-
-    .emg-box .emg-sub {
-        color: var(--hc-gray);
-        font-size: 13.5px;
-        margin-top: 3px;
-        line-height: 1.55;
+        letter-spacing: -0.6px;
+        line-height: 1.3;
     }
 
     .emg-box .emg-call {
-        display: inline-block;
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        flex-shrink: 0;
         background-color: var(--hc-red);
         color: #FFFFFF !important;
         text-decoration: none !important;
-        font-size: 18px;
+        font-size: 22px;
         font-weight: 800;
         letter-spacing: 0.5px;
-        padding: 11px 22px;
-        border-radius: 10px;
+        padding: 10px 24px 10px 10px;
+        border-radius: 999px;
         white-space: nowrap;
-        box-shadow: 0 2px 8px rgba(217, 48, 37, 0.25);
+        box-shadow: 0 4px 12px rgba(217, 48, 37, 0.30);
+        transition: all 0.15s ease;
+    }
+
+    /* 전화 아이콘: 흰 원 안에 빨간 수화기 → 버튼색과 확실히 구분 */
+    .emg-box .emg-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 999px;
+        background-color: #FFFFFF;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .emg-box .emg-icon svg {
+        width: 20px;
+        height: 20px;
+        fill: var(--hc-red);
     }
 
     .emg-box .emg-call:hover {
         background-color: #B3261E;
+        transform: translateY(-1px);
     }
 
     .list-count {
@@ -1123,6 +1143,23 @@ st.markdown(
 
         .stat-wrap .stat-value {
             font-size: 24px;
+        }
+
+        .emg-box {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 12px;
+            padding: 14px 16px;
+        }
+
+        .emg-box .emg-title {
+            font-size: 20px;
+            justify-content: center;
+        }
+
+        .emg-box .emg-call {
+            justify-content: center;
+            font-size: 21px;
         }
 
         .login-space {
@@ -1427,20 +1464,23 @@ def 긴급배너():
 
     이름, 번호 = 긴급연락처()
 
+    # 전화 아이콘 (이모지 대신 SVG → 흰 원 안에 빨간 수화기로 선명하게 표시)
+    아이콘 = (
+        '<span class="emg-icon"><svg viewBox="0 0 24 24" aria-hidden="true">'
+        '<path d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24 '
+        '11.4 11.4 0 0 0 3.57.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5'
+        'a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1.02l-2.2 2.2z"/></svg></span>'
+    )
+
     if 번호:
         전화링크 = "".join(c for c in 번호 if c.isdigit() or c == "+")
-        버튼 = f'<a class="emg-call" href="tel:{안전(전화링크)}">📞 {안전(번호)}</a>'
-        안내 = f"부상자 발생·화재·설비 이상 등 즉시 대응이 필요한 상황은 제보 대신 {안전(이름)}에게 바로 전화해주세요."
+        버튼 = f'<a class="emg-call" href="tel:{안전(전화링크)}">{아이콘}{안전(번호)}</a>'
     else:
-        버튼 = '<a class="emg-call" href="tel:119">📞 119</a>'
-        안내 = "부상자 발생·화재 등 즉시 대응이 필요한 상황은 제보 대신 바로 신고해주세요."
+        버튼 = f'<a class="emg-call" href="tel:119">{아이콘}119</a>'
 
     st.markdown(
         '<div class="emg-box">'
-        + '<div>'
         + '<div class="emg-title">🚨 긴급 상황은 전화로 먼저</div>'
-        + f'<div class="emg-sub">{안내}<br>생명이 위급하면 119에 먼저 신고하세요.</div>'
-        + '</div>'
         + 버튼
         + '</div>',
         unsafe_allow_html=True
