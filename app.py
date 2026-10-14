@@ -1954,7 +1954,7 @@ def 월일(값):
 
 def 처리단계표시(제보):
 
-    # 택배 배송조회처럼: 접수 → 조치중 → 조치완료 + 한 줄 요약
+    # 택배 배송조회처럼: 접수 → 조치중 → 조치완료
     상태 = 제보.get("status", "미조치")
     단계 = {"미조치": 0, "조치중": 1, "조치완료": 2}.get(상태, 0)
     강조색 = "#137333" if 단계 == 2 else "var(--hc-blue)"
@@ -1980,27 +1980,9 @@ def 처리단계표시(제보):
         if i < 2:
             조각.append(f'<div class="prog-line {"done" if i < 단계 else ""}"></div>')
 
-    if 상태 == "조치완료":
-        요약 = "조치가 완료되었습니다."
-        완료 = 월일(제보.get("completed_date"))
-        보조 = f"{완료} 조치" if 완료 else ""
-    elif 상태 == "조치중":
-        요약 = "조치 중입니다."
-        예정 = 월일(제보.get("planned_date"))
-        보조 = f"{예정}까지 조치 예정" if 예정 else ""
-    else:
-        요약 = "접수되었습니다."
-        보조 = "안전관리자가 확인하고 있습니다."
-
-    바탕, 글씨 = 상태톤(상태)
-
-    보조칸 = f'<span class="prog-sub">{안전(보조)}</span>' if 보조 else ""
-
     st.markdown(
         f'<div class="prog" style="--prog-accent:{강조색};">'
         f'<div class="prog-steps">{"".join(조각)}</div>'
-        f'<div class="prog-summary" style="background-color:{바탕};color:{글씨};">'
-        f'<span class="prog-main">{안전(요약)}</span>{보조칸}</div>'
         f'</div>',
         unsafe_allow_html=True
     )
@@ -2010,8 +1992,12 @@ def 처리결과카드(제보):
 
     # 조치 내용 + 조치 일정을 한 상자에
     처리내용 = (제보.get("action_detail") or "").strip()
-    예정 = 날짜표시(제보.get("planned_date"))
-    완료 = 날짜표시(제보.get("completed_date"))
+    상태 = 제보.get("status", "미조치")
+
+    # 상태에 맞는 날짜만 표시 (데이터에는 이전 예정일이 남아 있어도 화면에는 안 보이게)
+    #   조치중  → 조치 예정일만 / 조치완료 → 조치일만
+    예정 = 날짜표시(제보.get("planned_date")) if 상태 == "조치중" else None
+    완료 = 날짜표시(제보.get("completed_date")) if 상태 == "조치완료" else None
 
     if 처리내용:
         본문 = f'<div class="res-body">{안전(처리내용)}</div>'
