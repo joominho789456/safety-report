@@ -332,7 +332,7 @@ st.markdown(
         --hc-blue-line:   #CFE0EF;
         --hc-gray:        #5F6368;
         --hc-gray-soft:   #F1F3F5;
-        --hc-line:        #E1E6EC;
+        --hc-line:        #C4CED9;
         --hc-ink:         #1A1D21;
         --hc-bg:          #FFFFFF;
         --hc-card:        #FFFFFF;
@@ -569,7 +569,7 @@ st.markdown(
         justify-content: center;
         align-items: center;
         gap: 14px;
-        margin: 18px 0 10px 0;
+        margin: 18px 0 26px 0;
         flex-wrap: wrap;
     }
 
@@ -603,15 +603,16 @@ st.markdown(
     }
 
     /* ===== 홈 진입 카드 ===== */
-    div[data-testid="stVerticalBlockBorderWrapper"]:has(.home-card-mark) {
-        border: 2px solid #BCD5EA !important;
+    /* 사진(.home-photo)을 직접 감싸는 카드에만 적용 (바깥쪽 영역에는 적용되지 않도록 :not 처리) */
+    div[data-testid="stVerticalBlockBorderWrapper"]:has(.home-photo):not(:has(div[data-testid="stVerticalBlockBorderWrapper"] .home-photo)) {
+        border: 2px solid #7FA8D1 !important;
         border-radius: 20px !important;
         background-color: #FFFFFF;
-        box-shadow: 0 6px 20px rgba(0, 92, 171, 0.10);
+        box-shadow: 0 6px 20px rgba(0, 92, 171, 0.12);
         transition: all 0.18s ease;
     }
 
-    div[data-testid="stVerticalBlockBorderWrapper"]:has(.home-card-mark):hover {
+    div[data-testid="stVerticalBlockBorderWrapper"]:has(.home-photo):not(:has(div[data-testid="stVerticalBlockBorderWrapper"] .home-photo)):hover {
         border-color: var(--hc-blue) !important;
         box-shadow: 0 10px 28px rgba(0, 92, 171, 0.18);
         transform: translateY(-3px);
@@ -1731,8 +1732,7 @@ if st.session_state.화면 == "홈":
         + 홈로고
         + 홈구분
         + '<span class="home-title">안전제보시스템</span>'
-        + '</div>'
-        + '<div class="home-info">현장의 유해·위험요인을 제보하고, 조치 결과를 함께 확인합니다.</div>',
+        + '</div>',
         unsafe_allow_html=True
     )
 
