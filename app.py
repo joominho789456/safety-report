@@ -1138,7 +1138,7 @@ st.markdown(
     .st-key-folder_tabs [data-testid="stHorizontalBlock"] {
         gap: 6px !important;
         align-items: flex-end;
-        padding-left: 18px;
+        padding-left: 0;   /* 탭 왼쪽 끝 = 폴더 왼쪽 테두리 */
     }
 
     /* 탭 공통: 위쪽만 둥근 종이 탭 (일반 버튼 테두리·클릭 테두리 제거) */
@@ -1213,7 +1213,7 @@ st.markdown(
     .st-key-folder_panel_status {
         background-color: var(--folder-blue);
         border: none;
-        border-radius: 22px;
+        border-radius: 0 22px 22px 22px;   /* 탭이 올라가는 왼쪽 위 모서리는 각지게 */
         padding: 14px !important;
         box-shadow: 0 1px 2px rgba(60, 64, 67, 0.12), 0 6px 16px rgba(60, 64, 67, 0.08);
     }
@@ -1260,7 +1260,7 @@ st.markdown(
         /* 종이 폴더: 휴대폰에서도 탭은 위쪽 가로 (세로로 쌓이지 않게) */
         .st-key-folder_tabs [data-testid="stHorizontalBlock"] {
             flex-wrap: nowrap !important;
-            padding-left: 10px;
+            padding-left: 0;
         }
 
         .st-key-folder_tabs [data-testid="stColumn"] {
@@ -1291,7 +1291,7 @@ st.markdown(
         .st-key-folder_panel_report,
         .st-key-folder_panel_status {
             padding: 8px !important;
-            border-radius: 18px;
+            border-radius: 0 18px 18px 18px;
         }
 
         .st-key-folder_paper {
