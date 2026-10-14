@@ -3561,13 +3561,20 @@ elif (
                                     .execute()
                                 )
 
-                                st.success("처리상태와 처리내용이 저장되었습니다.")
+                                # 바로 rerun 하면 문구가 사라지므로, 기억해 뒀다가 다시 그린 화면에서 표시
+                                st.session_state["저장완료_제보"] = 상세ID
                                 st.rerun()
 
                             except Exception as e:
 
                                 st.error("저장 중 오류가 발생했습니다.")
                                 st.code(str(e))
+
+                        # 저장 버튼 바로 아래에 완료 문구
+                        if st.session_state.get("저장완료_제보") == 상세ID:
+                            st.session_state.pop("저장완료_제보", None)
+                            st.success("저장되었습니다.")
+                            st.toast("저장되었습니다.", icon="✅")
 
                     # ④ 제보 정보 (제보자 포함, 맨 아래)
                     섹션("제보 정보")
@@ -3598,7 +3605,7 @@ elif (
                                     .execute()
                                 )
 
-                                st.success(f"제보 #{상세ID}가 삭제되었습니다.")
+                                st.session_state["삭제완료_제보"] = 상세ID
 
                                 이동_관리자목록()
                                 st.rerun()
@@ -3731,6 +3738,11 @@ elif (
                     필터결과.append(제보)
 
                 섹션("안전제보 목록")
+
+                # 방금 삭제한 제보가 있으면 목록 위에 알림
+                if "삭제완료_제보" in st.session_state:
+                    삭제ID = st.session_state.pop("삭제완료_제보")
+                    st.success(f"제보 #{삭제ID}가 삭제되었습니다.")
 
                 목록1, 목록2 = st.columns([3, 1], vertical_alignment="center")
 
