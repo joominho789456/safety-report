@@ -516,7 +516,10 @@ st.markdown(
         font-size: 13.5px !important;
     }
 
-    /* ===== 컨테이너 카드 ===== */
+    /* ===== 컨테이너 카드 =====
+       카드마다 key="card_..." 이름표를 붙여서 그 이름표로 테두리를 겁니다.
+       (Streamlit 버전이 바뀌어도 적용되도록. 아래 BorderWrapper 는 구버전 대응용) */
+    div[class*="st-key-card_"],
     div[data-testid="stVerticalBlockBorderWrapper"] {
         background-color: var(--hc-card);
         border-radius: 14px !important;
@@ -603,8 +606,7 @@ st.markdown(
     }
 
     /* ===== 홈 진입 카드 ===== */
-    /* 사진(.home-photo)을 직접 감싸는 카드에만 적용 (바깥쪽 영역에는 적용되지 않도록 :not 처리) */
-    div[data-testid="stVerticalBlockBorderWrapper"]:has(.home-photo):not(:has(div[data-testid="stVerticalBlockBorderWrapper"] .home-photo)) {
+    div[class*="st-key-card_home"] {
         border: 3px solid #7FA8D1 !important;
         border-radius: 20px !important;
         background-color: #FFFFFF;
@@ -612,7 +614,7 @@ st.markdown(
         transition: all 0.18s ease;
     }
 
-    div[data-testid="stVerticalBlockBorderWrapper"]:has(.home-photo):not(:has(div[data-testid="stVerticalBlockBorderWrapper"] .home-photo)):hover {
+    div[class*="st-key-card_home"]:hover {
         border-color: var(--hc-blue) !important;
         box-shadow: 0 10px 28px rgba(0, 92, 171, 0.18);
         transform: translateY(-3px);
@@ -1630,7 +1632,7 @@ def 제보행(제보, 버튼키, 부서표시=True, 요약길이=110):
 
     눌림 = False
 
-    with st.container(border=True):
+    with st.container(border=True, key=f"card_row_{버튼키}"):
 
         c1, c2 = st.columns([6, 1], vertical_alignment="center")
 
@@ -1730,13 +1732,26 @@ if st.session_state.화면 == "홈":
         """
         <style>
         @media (min-width: 769px) {
-            .block-container {
-                min-height: 100vh;
+
+            /* 바깥 영역: 위아래 여백 제거 */
+            .block-container,
+            [data-testid="stMainBlockContainer"] {
+                padding-top: 0 !important;
+                padding-bottom: 0 !important;
+            }
+
+            /* 내용을 직접 담는 영역: 화면 높이만큼 늘리고 그 안에서 세로 가운데 정렬
+               (Streamlit 버전마다 구조가 달라 두 가지 경로를 모두 지정) */
+            .block-container > div[data-testid="stVerticalBlock"],
+            [data-testid="stMainBlockContainer"] > div[data-testid="stVerticalBlock"],
+            .block-container > div > div[data-testid="stVerticalBlock"],
+            [data-testid="stMainBlockContainer"] > div > div[data-testid="stVerticalBlock"] {
+                /* 화면 맨 위의 보이지 않는 스타일 요소가 차지하는 높이만큼 빼서
+                   위·아래 여백이 같아지도록 보정 */
+                min-height: calc(100vh - 48px);
                 display: flex;
                 flex-direction: column;
                 justify-content: center;
-                padding-top: 0 !important;
-                padding-bottom: 0 !important;
             }
         }
         </style>
@@ -1765,7 +1780,7 @@ if st.session_state.화면 == "홈":
 
     with col1:
 
-        with st.container(border=True):
+        with st.container(border=True, key="card_home_worker"):
 
             사진 = f'<img src="{worker_image}">' if worker_image else "👷"
 
@@ -1786,7 +1801,7 @@ if st.session_state.화면 == "홈":
 
     with col2:
 
-        with st.container(border=True):
+        with st.container(border=True, key="card_home_admin"):
 
             사진 = f'<img src="{admin_image}">' if admin_image else "🔐"
 
@@ -1859,7 +1874,7 @@ elif st.session_state.화면 == "제보":
 
     긴급배너()
 
-    with st.container(border=True):
+    with st.container(border=True, key="card_report_form"):
 
         f1, f2 = st.columns(2)
 
@@ -2073,7 +2088,7 @@ elif st.session_state.화면 == "처리현황":
 
         섹션("조회 조건")
 
-        with st.container(border=True):
+        with st.container(border=True, key="card_status_filter"):
 
             현황검색어 = st.text_input(
                 "검색어",
@@ -2217,7 +2232,7 @@ elif (
 
     with l2:
 
-        with st.container(border=True):
+        with st.container(border=True, key="card_login"):
 
             관리자ID = st.text_input("관리자 ID", placeholder="관리자 ID")
 
@@ -2385,7 +2400,7 @@ elif (
 
             섹션("처리 관리")
 
-            with st.container(border=True):
+            with st.container(border=True, key="card_process"):
 
                 현재상태 = 제보.get("status", "미조치")
 
@@ -2584,7 +2599,7 @@ elif (
 
         섹션("제보 검색")
 
-        with st.container(border=True):
+        with st.container(border=True, key="card_admin_filter"):
 
             검색어 = st.text_input(
                 "검색어",
