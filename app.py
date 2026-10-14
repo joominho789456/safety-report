@@ -1858,6 +1858,11 @@ st.markdown(
             border-radius: 0 18px 18px 18px;
         }
 
+        /* 휴대폰에서는 처리현황 탭이 오른쪽 끝까지 닿으므로 오른쪽 위 모서리도 각지게 */
+        .st-key-folder_panel_status {
+            border-radius: 0 0 18px 18px;
+        }
+
         div[class*="st-key-folder_paper"] {
             padding: 20px 16px 24px 16px !important;
             min-height: 0;
