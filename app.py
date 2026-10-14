@@ -1193,6 +1193,62 @@ st.markdown(
         font-weight: 600;
     }
 
+    /* ===== 관리자 로그인 카드 ===== */
+    div[class*="st-key-folder_paper_login"] {
+        padding: 36px 32px 32px 32px !important;
+    }
+
+    .login-head {
+        text-align: center;
+        margin-bottom: 22px;
+    }
+
+    .login-head img {
+        height: 30px;
+        object-fit: contain;
+        margin-bottom: 18px;
+    }
+
+    .login-title {
+        color: var(--hc-ink);
+        font-size: 24px;
+        font-weight: 800;
+        letter-spacing: -0.6px;
+    }
+
+    .login-sub {
+        color: var(--hc-gray);
+        font-size: 14.5px;
+        margin-top: 6px;
+    }
+
+    .st-key-card_login {
+        gap: 12px !important;
+    }
+
+    .st-key-login_button {
+        margin-top: 8px;
+    }
+
+    /* 카드 아래 '처음 화면': 테두리 없는 글자 버튼 */
+    .st-key-login_home button {
+        background-color: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        color: var(--hc-gray) !important;
+        min-height: 40px !important;
+    }
+
+    .st-key-login_home button:hover {
+        background-color: transparent !important;
+        color: var(--hc-blue) !important;
+    }
+
+    .st-key-login_home button p {
+        font-size: 14.5px !important;
+        font-weight: 600 !important;
+    }
+
     /* ===== AI 조치방안 카드 ===== */
     .st-key-ai_panel {
         background-color: #F4F7FC;
@@ -3176,54 +3232,91 @@ elif (
     and not st.session_state.관리자로그인
 ):
 
-    내비게이션(
-        ["관리자 로그인"],
-        뒤로=("← 처음 화면", 이동_홈),
-        홈버튼=False
+    # 로그인 화면: 화면 정중앙의 작은 카드 하나 (PC에서만 상하 중앙)
+    st.markdown(
+        """
+        <style>
+        @media (min-width: 769px) {
+            .block-container,
+            [data-testid="stMainBlockContainer"] {
+                padding-top: 0 !important;
+                padding-bottom: 0 !important;
+            }
+            .block-container > div[data-testid="stVerticalBlock"],
+            [data-testid="stMainBlockContainer"] > div[data-testid="stVerticalBlock"],
+            .block-container > div > div[data-testid="stVerticalBlock"],
+            [data-testid="stMainBlockContainer"] > div > div[data-testid="stVerticalBlock"] {
+                min-height: calc(100vh - 32px);
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
     )
 
-    with st.container(key="folder_panel_login"):
+    로그인로고 = f'<img src="{logo_image}">' if logo_image else ""
+
+    l1, l2, l3 = st.columns([1, 1.7, 1])
+
+    with l2:
 
         with st.container(key="folder_paper_login"):
 
-            페이지헤더("관리자 로그인", "관리자 계정으로 로그인해주세요.")
+            st.markdown(
+                '<div class="login-head">'
+                + 로그인로고
+                + '<div class="login-title">관리자 로그인</div>'
+                + '<div class="login-sub">관리자 계정으로 로그인해주세요.</div>'
+                + '</div>',
+                unsafe_allow_html=True
+            )
 
-            l1, l2, l3 = st.columns([1, 2, 1])
+            with st.container(key="card_login"):
 
-            with l2:
+                관리자ID = st.text_input(
+                    "관리자 ID",
+                    placeholder="관리자 ID",
+                    label_visibility="collapsed"
+                )
 
-                with st.container(key="card_login"):
+                관리자비밀번호 = st.text_input(
+                    "비밀번호",
+                    type="password",
+                    placeholder="비밀번호",
+                    label_visibility="collapsed"
+                )
 
-                    관리자ID = st.text_input("관리자 ID", placeholder="관리자 ID")
+                if st.button(
+                    "로그인",
+                    type="primary",
+                    use_container_width=True,
+                    key="login_button"
+                ):
 
-                    관리자비밀번호 = st.text_input(
-                        "비밀번호",
-                        type="password",
-                        placeholder="비밀번호"
-                    )
+                    등록ID, 등록비밀번호 = 관리자계정()
 
-                    st.write("")
+                    if not 등록ID or not 등록비밀번호:
+                        st.error(
+                            "관리자 계정이 설정되지 않았습니다. secrets 에 admin 항목을 추가해주세요."
+                        )
 
-                    if st.button(
-                        "로그인",
-                        type="primary",
-                        use_container_width=True,
-                        key="login_button"
-                    ):
+                    elif 관리자ID == 등록ID and 관리자비밀번호 == 등록비밀번호:
+                        st.session_state.관리자로그인 = True
+                        st.rerun()
 
-                        등록ID, 등록비밀번호 = 관리자계정()
+                    else:
+                        st.error("ID 또는 비밀번호가 올바르지 않습니다.")
 
-                        if not 등록ID or not 등록비밀번호:
-                            st.error(
-                                "관리자 계정이 설정되지 않았습니다. secrets 에 admin 항목을 추가해주세요."
-                            )
-
-                        elif 관리자ID == 등록ID and 관리자비밀번호 == 등록비밀번호:
-                            st.session_state.관리자로그인 = True
-                            st.rerun()
-
-                        else:
-                            st.error("ID 또는 비밀번호가 올바르지 않습니다.")
+        # 카드 아래 작은 글자 버튼
+        st.button(
+            "← 처음 화면",
+            key="login_home",
+            on_click=이동_홈,
+            use_container_width=True
+        )
 
 
 # =========================================================
