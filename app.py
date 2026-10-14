@@ -484,36 +484,79 @@ st.markdown(
         background-color: #FFF5F4 !important;
     }
 
-    /* ===== 입력 요소 ===== */
-    .stTextInput input,
-    .stTextArea textarea {
-        border-radius: 8px !important;
-        background-color: #FFFFFF !important;
-    }
+    /* ===== 입력 요소 =====
+       Streamlit 버전마다 입력칸 구조가 달라서 신버전(1.6x)·구버전 경로를 함께 지정합니다.
+       - 신버전: stTextInputRootElement / stTextAreaRootElement / .stSelectbox [role="group"]
+       - 구버전: data-baseweb="input" / "textarea" / "select"                          */
 
-    .stTextInput input:focus,
-    .stTextArea textarea:focus {
-        border-color: var(--hc-blue) !important;
-        box-shadow: 0 0 0 3px rgba(0, 92, 171, 0.15) !important;
-    }
-
+    /* 입력칸 상자: 진한 테두리 + 흰 바탕 */
+    div[data-testid="stTextInputRootElement"],
+    div[data-testid="stTextAreaRootElement"],
+    .stSelectbox div[role="group"],
+    .stDateInput div[role="group"],
+    div[data-baseweb="input"],
+    div[data-baseweb="textarea"],
     div[data-baseweb="select"] > div {
-        border-radius: 8px !important;
+        border: 2px solid #9AA8B8 !important;
+        border-radius: 10px !important;
         background-color: #FFFFFF !important;
     }
 
+    div[data-testid="stTextInputRootElement"] *,
+    div[data-testid="stTextAreaRootElement"] *,
+    .stSelectbox div[role="group"] *,
+    div[data-baseweb="input"] *,
+    div[data-baseweb="textarea"] * {
+        background-color: transparent !important;
+    }
+
+    /* 입력 중일 때는 회사 파란색 테두리 */
+    div[data-testid="stTextInputRootElement"]:focus-within,
+    div[data-testid="stTextAreaRootElement"]:focus-within,
+    .stSelectbox div[role="group"]:focus-within,
+    .stDateInput div[role="group"]:focus-within,
+    div[data-baseweb="input"]:focus-within,
+    div[data-baseweb="textarea"]:focus-within,
     div[data-baseweb="select"] > div:focus-within {
         border-color: var(--hc-blue) !important;
         box-shadow: 0 0 0 3px rgba(0, 92, 171, 0.15) !important;
     }
 
+    /* 입력칸 안 글씨 크게 */
+    div[data-testid="stTextInputRootElement"] input,
+    div[data-testid="stTextAreaRootElement"] textarea,
+    .stSelectbox div[role="group"] input,
+    .stSelectbox div[role="group"] span,
+    .stDateInput div[role="group"] input,
+    div[data-baseweb="input"] input,
+    div[data-baseweb="textarea"] textarea,
+    div[data-baseweb="select"] div {
+        font-size: 17px !important;
+        color: var(--hc-ink) !important;
+    }
+
+    /* 안내 문구(placeholder)는 연한 회색 유지 */
+    div[data-testid="stTextInputRootElement"] input::placeholder,
+    div[data-testid="stTextAreaRootElement"] textarea::placeholder {
+        color: #8A96A3 !important;
+    }
+
+    /* 드롭다운 펼쳤을 때 목록 글씨 */
+    [role="listbox"] [role="option"],
+    ul[role="listbox"] li,
+    ul[role="listbox"] li div {
+        font-size: 16.5px !important;
+    }
+
+    /* 입력칸 위 항목명 (부서, 단위작업 등) */
+    [data-testid="stWidgetLabel"] p,
     .stTextInput label,
     .stTextArea label,
     .stSelectbox label,
     .stDateInput label {
         color: var(--hc-ink) !important;
         font-weight: 700 !important;
-        font-size: 13.5px !important;
+        font-size: 15px !important;
     }
 
     /* ===== 컨테이너 카드 =====
@@ -718,12 +761,25 @@ st.markdown(
         opacity: 1;
     }
 
-    /* 제보 등록 버튼은 크게 */
+    /* 제보 등록 버튼은 크게 (버튼 안 글씨 p 까지 지정해야 신버전에서 적용됨) */
     .st-key-submit_report button,
     .st-key-login_button button {
-        min-height: 54px !important;
-        font-size: 17px !important;
+        min-height: 56px !important;
+    }
+
+    .st-key-submit_report button p,
+    .st-key-login_button button p {
+        font-size: 19px !important;
         font-weight: 800 !important;
+        letter-spacing: 1px !important;
+    }
+
+    /* 상단·하단 이동 버튼 글씨 */
+    div[class*="st-key-navback"] button p,
+    div[class*="st-key-navhome"] button p,
+    div[class*="st-key-navlogout"] button p {
+        font-size: 15.5px !important;
+        font-weight: 700 !important;
     }
 
     /* ===== 통계 카드 ===== */
@@ -1898,28 +1954,16 @@ elif st.session_state.화면 == "제보":
             max_chars=20
         )
 
-        st.caption(
-            "성명은 안전관리자만 확인할 수 있으며, 처리현황 화면에는 공개되지 않습니다."
-        )
-
         내용 = st.text_area(
             "유해·위험요인 내용",
-            placeholder="발견한 위험요인을 구체적으로 작성해주세요.\n예) UNIT 조립장 통로에서 지게차 후진 시 벽과의 간격이 좁아 통행 중 끼일 위험이 있습니다.",
+            placeholder="발견한 위험요인을 구체적으로 작성해주세요.",
             height=190
-        )
-
-        st.caption(
-            "접수된 제보는 전 직원이 볼 수 있습니다. 개인을 특정하는 표현은 피해주세요."
         )
 
         위험유형 = st.selectbox(
             "위험유형",
             [AI자동분류] + 위험유형목록,
             key="report_risk"
-        )
-
-        st.caption(
-            "잘 모르겠으면 'AI 자동 분류'로 두세요. 내용을 읽고 위험유형을 자동으로 정합니다."
         )
 
         st.write("")
