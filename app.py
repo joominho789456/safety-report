@@ -2822,11 +2822,6 @@ if st.session_state.화면 == "홈":
         unsafe_allow_html=True
     )
 
-    여백A, 배너칸, 여백B = st.columns([0.5, 8, 0.5])
-
-    with 배너칸:
-        긴급배너()
-
     여백L, col1, col2, 여백R = st.columns([0.5, 4, 4, 0.5], gap="medium")
 
     # 첫 화면 카드: 흰 종이 카드 (탭이 하나뿐인 화면은 폴더 모양 없이)
@@ -2839,8 +2834,7 @@ if st.session_state.화면 == "홈":
                 사진 = f'<img src="{worker_image}">' if worker_image else "👷"
 
                 st.markdown(
-                    f'<div class="home-photo">{사진}</div>'
-                    + '<div class="home-card-desc">위험요인 제보 · 처리현황 확인</div>',
+                    f'<div class="home-photo">{사진}</div>',
                     unsafe_allow_html=True
                 )
 
@@ -2862,8 +2856,7 @@ if st.session_state.화면 == "홈":
                 사진 = f'<img src="{admin_image}">' if admin_image else "🔐"
 
                 st.markdown(
-                    f'<div class="home-photo">{사진}</div>'
-                    + '<div class="home-card-desc">제보 확인 · 조치 등록 (로그인 필요)</div>',
+                    f'<div class="home-photo">{사진}</div>',
                     unsafe_allow_html=True
                 )
 
