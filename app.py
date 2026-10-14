@@ -1852,14 +1852,10 @@ st.markdown(
             min-height: 44px !important;
         }
 
+        /* 휴대폰에서는 두 탭이 폴더 폭 전체를 채우므로 위쪽 두 모서리 모두 각지게 */
         .st-key-folder_panel_report,
         .st-key-folder_panel_status {
             padding: 8px !important;
-            border-radius: 0 18px 18px 18px;
-        }
-
-        /* 휴대폰에서는 처리현황 탭이 오른쪽 끝까지 닿으므로 오른쪽 위 모서리도 각지게 */
-        .st-key-folder_panel_status {
             border-radius: 0 0 18px 18px;
         }
 
