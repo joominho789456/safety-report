@@ -520,7 +520,7 @@ st.markdown(
     div[data-testid="stVerticalBlockBorderWrapper"] {
         background-color: var(--hc-card);
         border-radius: 14px !important;
-        border: 1px solid var(--hc-line) !important;
+        border: 2px solid var(--hc-line) !important;
         box-shadow: var(--hc-shadow);
     }
 
@@ -530,7 +530,7 @@ st.markdown(
         align-items: center;
         gap: 18px;
         background: linear-gradient(100deg, #FFFFFF 55%, var(--hc-blue-soft) 100%);
-        border: 1px solid var(--hc-line);
+        border: 2px solid var(--hc-line);
         border-left: 6px solid var(--hc-blue);
         border-radius: 14px;
         padding: 20px 26px;
@@ -605,7 +605,7 @@ st.markdown(
     /* ===== 홈 진입 카드 ===== */
     /* 사진(.home-photo)을 직접 감싸는 카드에만 적용 (바깥쪽 영역에는 적용되지 않도록 :not 처리) */
     div[data-testid="stVerticalBlockBorderWrapper"]:has(.home-photo):not(:has(div[data-testid="stVerticalBlockBorderWrapper"] .home-photo)) {
-        border: 2px solid #7FA8D1 !important;
+        border: 3px solid #7FA8D1 !important;
         border-radius: 20px !important;
         background-color: #FFFFFF;
         box-shadow: 0 6px 20px rgba(0, 92, 171, 0.12);
@@ -727,7 +727,7 @@ st.markdown(
     /* ===== 통계 카드 ===== */
     .stat-wrap {
         background-color: #FFFFFF;
-        border: 1px solid var(--hc-line);
+        border: 2px solid var(--hc-line);
         border-radius: 14px;
         padding: 16px 18px 14px 18px;
         box-shadow: var(--hc-shadow);
@@ -830,7 +830,7 @@ st.markdown(
 
     /* ===== 정보 카드 ===== */
     .info-card {
-        border: 1px solid var(--hc-line);
+        border: 2px solid var(--hc-line);
         border-top: 5px solid var(--hc-blue);
         border-radius: 14px;
         background-color: #FFFFFF;
@@ -906,7 +906,7 @@ st.markdown(
 
     /* ===== 내용 / 결과 박스 ===== */
     .text-box {
-        border: 1px solid var(--hc-line);
+        border: 2px solid var(--hc-line);
         border-left: 5px solid var(--hc-gray);
         border-radius: 12px;
         background-color: #FFFFFF;
