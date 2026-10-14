@@ -989,6 +989,188 @@ st.markdown(
         color: var(--hc-blue) !important;
     }
 
+    /* ===== 처리결과 상세 (근로자) ===== */
+
+    /* 처리 단계: 접수 → 조치중 → 조치완료 */
+    .prog {
+        margin: 4px 0 8px 0;
+    }
+
+    .prog-steps {
+        display: flex;
+        align-items: center;
+        padding: 6px 4px 18px 4px;
+    }
+
+    .prog-step {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        flex: 0 0 auto;
+        width: 76px;
+    }
+
+    .prog-dot {
+        width: 38px;
+        height: 38px;
+        border-radius: 999px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        font-weight: 800;
+        border: 2px solid #D5D9DE;
+        color: #9AA0A6;
+        background-color: #FFFFFF;
+    }
+
+    .prog-label {
+        font-size: 14.5px;
+        font-weight: 600;
+        color: #9AA0A6;
+        white-space: nowrap;
+    }
+
+    .prog-step.done .prog-dot {
+        background-color: var(--prog-accent);
+        border-color: var(--prog-accent);
+        color: #FFFFFF;
+    }
+
+    .prog-step.now .prog-dot {
+        background-color: #FFFFFF;
+        border-color: var(--prog-accent);
+        color: var(--prog-accent);
+        box-shadow: 0 0 0 5px rgba(0, 92, 171, 0.12);
+    }
+
+    .prog-step.done .prog-label,
+    .prog-step.now .prog-label {
+        color: var(--hc-ink);
+        font-weight: 700;
+    }
+
+    .prog-line {
+        flex: 1 1 auto;
+        height: 3px;
+        border-radius: 3px;
+        background-color: #E3E5E8;
+        margin: 0 -14px 26px -14px;   /* 원 가운데 높이에 맞춤 */
+    }
+
+    .prog-line.done {
+        background-color: var(--prog-accent);
+    }
+
+    .prog-summary {
+        border-radius: 14px;
+        padding: 16px 20px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: 6px 12px;
+    }
+
+    .prog-main {
+        font-size: 19px;
+        font-weight: 800;
+        letter-spacing: -0.4px;
+    }
+
+    .prog-sub {
+        font-size: 15.5px;
+        font-weight: 600;
+        opacity: 0.9;
+    }
+
+    /* 제보 내용: 크게 */
+    .quote-box {
+        background-color: var(--hc-surface-2);
+        border-radius: 14px;
+        padding: 18px 22px;
+        color: var(--hc-ink);
+        font-size: 17px;
+        font-weight: 500;
+        line-height: 1.75;
+        white-space: pre-line;
+        word-break: break-word;
+    }
+
+    /* 처리 결과: 조치 내용 + 일정 한 상자 */
+    .res-card {
+        background-color: var(--hc-green-tonal);
+        border-radius: 14px;
+        padding: 18px 22px;
+    }
+
+    .res-body {
+        color: var(--hc-ink);
+        font-size: 17px;
+        font-weight: 500;
+        line-height: 1.75;
+        white-space: pre-line;
+        word-break: break-word;
+    }
+
+    .res-body.empty {
+        color: var(--hc-gray);
+        font-size: 15.5px;
+    }
+
+    .res-dates {
+        margin-top: 14px;
+        padding-top: 12px;
+        border-top: 1px solid rgba(19, 115, 51, 0.18);
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px 28px;
+    }
+
+    .res-row {
+        display: flex;
+        gap: 10px;
+        align-items: baseline;
+    }
+
+    .res-k {
+        color: var(--hc-green-ink);
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    .res-v {
+        color: var(--hc-ink);
+        font-size: 15.5px;
+        font-weight: 600;
+    }
+
+    /* 제보 정보: 작게, 회색 */
+    .meta-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px 24px;
+        border-top: 1px solid var(--hc-line-soft);
+        padding-top: 14px;
+    }
+
+    .meta-item {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    .meta-k {
+        color: var(--hc-gray);
+        font-size: 13px;
+    }
+
+    .meta-v {
+        color: var(--hc-ink-2);
+        font-size: 15px;
+        font-weight: 600;
+    }
+
     /* ===== 정보 카드 ===== */
     .info-card {
         border: 1px solid var(--hc-line);
@@ -1607,6 +1789,27 @@ st.markdown(
             grid-template-columns: 1fr;
         }
 
+        .meta-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .prog-step {
+            width: 64px;
+        }
+
+        .prog-dot {
+            width: 34px;
+            height: 34px;
+        }
+
+        .prog-label {
+            font-size: 13.5px;
+        }
+
+        .prog-main {
+            font-size: 17.5px;
+        }
+
         div[class*="st-key-card_row_"] [data-testid="stHorizontalBlock"] {
             flex-wrap: nowrap !important;
             gap: 10px !important;
@@ -1741,6 +1944,112 @@ def 날짜표시(값):
         return None
 
     return 변환.strftime("%Y-%m-%d")
+
+
+def 월일(값):
+    # 날짜 → "10월 30일"
+    d = 날짜파싱(값)
+    return f"{d.month}월 {d.day}일" if d else None
+
+
+def 처리단계표시(제보):
+
+    # 택배 배송조회처럼: 접수 → 조치중 → 조치완료 + 한 줄 요약
+    상태 = 제보.get("status", "미조치")
+    단계 = {"미조치": 0, "조치중": 1, "조치완료": 2}.get(상태, 0)
+    강조색 = "#137333" if 단계 == 2 else "var(--hc-blue)"
+
+    이름들 = ["접수", "조치중", "조치완료"]
+    조각 = []
+
+    for i, 이름 in enumerate(이름들):
+
+        if i < 단계 or (i == 2 and 단계 == 2):
+            종류, 표시 = "done", "✓"
+        elif i == 단계:
+            종류, 표시 = "now", str(i + 1)
+        else:
+            종류, 표시 = "todo", str(i + 1)
+
+        조각.append(
+            f'<div class="prog-step {종류}">'
+            f'<span class="prog-dot">{표시}</span>'
+            f'<span class="prog-label">{이름}</span></div>'
+        )
+
+        if i < 2:
+            조각.append(f'<div class="prog-line {"done" if i < 단계 else ""}"></div>')
+
+    if 상태 == "조치완료":
+        요약 = "조치가 완료되었습니다."
+        완료 = 월일(제보.get("completed_date"))
+        보조 = f"{완료} 조치" if 완료 else ""
+    elif 상태 == "조치중":
+        요약 = "조치 중입니다."
+        예정 = 월일(제보.get("planned_date"))
+        보조 = f"{예정}까지 조치 예정" if 예정 else ""
+    else:
+        요약 = "접수되었습니다."
+        보조 = "안전관리자가 확인하고 있습니다."
+
+    바탕, 글씨 = 상태톤(상태)
+
+    보조칸 = f'<span class="prog-sub">{안전(보조)}</span>' if 보조 else ""
+
+    st.markdown(
+        f'<div class="prog" style="--prog-accent:{강조색};">'
+        f'<div class="prog-steps">{"".join(조각)}</div>'
+        f'<div class="prog-summary" style="background-color:{바탕};color:{글씨};">'
+        f'<span class="prog-main">{안전(요약)}</span>{보조칸}</div>'
+        f'</div>',
+        unsafe_allow_html=True
+    )
+
+
+def 처리결과카드(제보):
+
+    # 조치 내용 + 조치 일정을 한 상자에
+    처리내용 = (제보.get("action_detail") or "").strip()
+    예정 = 날짜표시(제보.get("planned_date"))
+    완료 = 날짜표시(제보.get("completed_date"))
+
+    if 처리내용:
+        본문 = f'<div class="res-body">{안전(처리내용)}</div>'
+    else:
+        본문 = '<div class="res-body empty">아직 등록된 조치 내용이 없습니다.</div>'
+
+    일정 = ""
+    if 완료:
+        일정 += f'<div class="res-row"><span class="res-k">조치일</span><span class="res-v">{안전(완료)}</span></div>'
+    if 예정:
+        일정 += f'<div class="res-row"><span class="res-k">조치 예정일</span><span class="res-v">{안전(예정)}</span></div>'
+
+    일정칸 = f'<div class="res-dates">{일정}</div>' if 일정 else ""
+
+    st.markdown(
+        f'<div class="res-card">{본문}{일정칸}</div>',
+        unsafe_allow_html=True
+    )
+
+
+def 제보정보표(제보):
+
+    # 번호·시간·부서·단위작업·위험유형: 필요할 때만 보는 정보라 작게
+    항목 = [
+        ("제보번호", f"#{제보.get('id', '-')}"),
+        ("제보시간", 시간표시(제보.get("created_at"), 짧게=True)),
+        ("부서", 제보.get("department") or "-"),
+        ("단위작업", 제보.get("location") or "-"),
+        ("위험유형", 제보.get("risk_type") or "-"),
+    ]
+
+    칸 = "".join(
+        f'<div class="meta-item"><span class="meta-k">{안전(k)}</span>'
+        f'<span class="meta-v">{안전(v)}</span></div>'
+        for k, v in 항목
+    )
+
+    st.markdown(f'<div class="meta-grid">{칸}</div>', unsafe_allow_html=True)
 
 
 def 일정섹션(제보):
@@ -2543,43 +2852,32 @@ elif st.session_state.화면 in ("근로자메뉴", "제보", "처리현황"):
                         st.code(str(e))
                         제보 = None
 
-                    페이지헤더("처리결과 상세", f"제보 #{현황ID} 의 처리 진행 상황입니다.")
-
                     if 제보 is None:
 
                         st.warning("해당 제보를 찾을 수 없습니다.")
 
                     else:
 
-                        제보정보카드(제보)
+                        # ① 처리 단계 (가장 궁금한 답을 맨 위에)
+                        처리단계표시(제보)
 
+                        # ② 제보 내용
                         섹션("제보 내용")
 
-                        텍스트박스(
-                            "접수된 내용",
-                            제보.get("description", "-") or "-",
-                            "blue"
+                        st.markdown(
+                            f'<div class="quote-box">{안전(제보.get("description", "-") or "-")}</div>',
+                            unsafe_allow_html=True
                         )
 
+                        # ③ 처리 결과 (조치 내용 + 일정)
                         섹션("처리 결과")
 
-                        현재상태 = 제보.get("status", "미조치")
-                        처리내용 = (제보.get("action_detail") or "").strip()
+                        처리결과카드(제보)
 
-                        if not 처리내용:
+                        # ④ 제보 정보 (작게, 맨 아래)
+                        섹션("제보 정보")
 
-                            if 현재상태 == "미조치":
-                                st.warning("아직 조치가 시작되지 않았습니다. 관리자가 확인 중입니다.")
-                            else:
-                                st.warning(
-                                    f"현재 상태는 '{현재상태}' 이며, 등록된 처리내용이 아직 없습니다."
-                                )
-
-                        else:
-
-                            텍스트박스("조치 내용", 처리내용, "green")
-
-                        일정섹션(제보)
+                        제보정보표(제보)
 
                 # -----------------------------------------------------
                 # 8-1-2. 처리현황 목록
