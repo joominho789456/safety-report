@@ -911,17 +911,26 @@ st.markdown(
         min-width: 0;
     }
 
+    /* Streamlit 글 상자의 기본 아래 여백(-16px) 때문에 내용이 8px 아래로 밀리던 것 보정 */
+    div[class*="st-key-card_row_"] [data-testid="stMarkdownContainer"],
+    div[class*="st-key-card_row_"] .stMarkdown {
+        margin-bottom: 0 !important;
+    }
+
+    /* 줄 안 칸들이 좁아져도 말줄임(…)이 작동하도록 */
+    div[class*="st-key-card_row_"] [data-testid="stColumn"] {
+        min-width: 0;
+    }
+
     .row2-title {
         color: var(--hc-ink);
         font-size: 17px;
         font-weight: 700;
         line-height: 1.5;
         letter-spacing: -0.3px;
-        word-break: break-word;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
+        white-space: nowrap;          /* 줄바꿈 없이 한 줄 */
         overflow: hidden;
+        text-overflow: ellipsis;      /* 넘치면 … */
     }
 
     .row2-meta {
@@ -1614,12 +1623,26 @@ st.markdown(
 
         .row2 {
             flex-direction: column;
-            align-items: flex-start;
+            align-items: stretch;
             gap: 8px;
             padding-left: 12px;
+            min-width: 0;
+            overflow: hidden;
+        }
+
+        /* 내용 칸 폭을 줄 너비에 맞춰야 … 말줄임이 작동 */
+        .row2-main {
+            width: 100%;
+        }
+
+        div[class*="st-key-card_row_"] [data-testid="stColumn"]:first-child {
+            flex: 1 1 0 !important;
+            width: auto !important;
+            overflow: hidden;
         }
 
         .row2-status {
+            align-self: flex-start;
             order: -1;
             font-size: 13.5px;
             padding: 5px 12px;
@@ -2139,34 +2162,17 @@ def 텍스트박스(제목, 본문, 색="basic"):
 def 제보행(제보, 버튼키, 부서표시=True, 요약길이=110):
 
     # 목록 한 줄 구성 (눈이 '내용 → 상태' 순서로 가도록)
-    #   왼쪽 : 상태색 띠 | 내용(굵게) / 부가정보 회색 한 줄
+    #   왼쪽 : 상태색 띠 | 내용(굵게, 한 줄 — 길면 … 처리)
     #   오른쪽: 상태 표시, 작은 › 버튼
+    #   번호·단위작업·위험유형·시간은 상세 화면에서 확인
 
     제보ID = 제보.get("id")
     상태 = 제보.get("status", "미조치")
-
-    생성시간 = 시간표시(제보.get("created_at"), 짧게=True)
-
-    # 올해 제보는 연도를 빼서 짧게 (예: 10-14 14:04)
-    올해 = str(datetime.now(KST).year) + "-"
-    if 생성시간.startswith(올해):
-        생성시간 = 생성시간[len(올해):]
 
     내용 = (제보.get("description", "-") or "-").strip()
 
     if len(내용) > 요약길이:
         내용 = 내용[:요약길이] + " ..."
-
-    부가 = [f"#{제보ID}", 제보.get("location") or "-", 제보.get("risk_type") or "-"]
-
-    if 부서표시:
-        부가.insert(1, 제보.get("department") or "-")
-
-    부가.append(생성시간)
-
-    부가줄 = '<span class="row2-dot">·</span>'.join(
-        f"<span>{안전(x)}</span>" for x in 부가
-    )
 
     바탕, 글씨 = 상태톤(상태)
 
@@ -2182,7 +2188,6 @@ def 제보행(제보, 버튼키, 부서표시=True, 요약길이=110):
                 <div class="row2" style="border-left-color:{글씨};">
                     <div class="row2-main">
                         <div class="row2-title">{안전(내용)}</div>
-                        <div class="row2-meta">{부가줄}</div>
                     </div>
                     <span class="row2-status" style="background-color:{바탕};color:{글씨};">
                         <span class="row2-status-dot" style="background-color:{글씨};"></span>{안전(상태)}
