@@ -1305,15 +1305,38 @@ st.markdown(
         box-shadow: 0 2px 6px rgba(60, 64, 67, 0.15), 0 10px 24px rgba(60, 64, 67, 0.12);
     }
 
-    /* 관리자 첫 화면 버튼은 마닐라 폴더에 어울리는 갈색 */
-    .st-key-admin_button button[kind="primary"] {
-        background-color: #7A5C26 !important;
-        border-color: #7A5C26 !important;
+
+    /* 탭이 하나뿐인 화면(첫 화면·관리자 로그인·제보 관리)은 폴더 겉판 없이
+       흰 종이 카드만: 얇은 테두리 + 은은한 그림자                           */
+    .st-key-folder_panel_admin,
+    .st-key-folder_home_worker,
+    .st-key-folder_home_admin {
+        background-color: transparent !important;
+        padding: 0 !important;
+        margin-top: 0 !important;
+        border-radius: 22px !important;
+        box-shadow: none !important;
     }
 
-    .st-key-admin_button button[kind="primary"]:hover {
-        background-color: #624A1E !important;
-        border-color: #624A1E !important;
+    div[class*="st-key-folder_paper_home"],
+    div[class*="st-key-folder_paper_login"],
+    div[class*="st-key-folder_paper_admin"] {
+        border: 1px solid var(--hc-line);
+        border-radius: 22px;
+        box-shadow: 0 1px 2px rgba(60, 64, 67, 0.08), 0 4px 14px rgba(60, 64, 67, 0.06);
+    }
+
+    /* 첫 화면 카드: 마우스 올리면 살짝 들림 */
+    .st-key-folder_home_worker:hover,
+    .st-key-folder_home_admin:hover {
+        transform: translateY(-2px);
+        box-shadow: none !important;
+    }
+
+    .st-key-folder_home_worker:hover div[class*="st-key-folder_paper_home"],
+    .st-key-folder_home_admin:hover div[class*="st-key-folder_paper_home"] {
+        border-color: transparent;
+        box-shadow: 0 2px 6px rgba(60, 64, 67, 0.15), 0 10px 24px rgba(60, 64, 67, 0.12);
     }
 
     /* 종이 안에서는 상자 안의 상자가 생기지 않도록 정리 */
@@ -1375,10 +1398,7 @@ st.markdown(
         }
 
         .st-key-folder_panel_report,
-        .st-key-folder_panel_status,
-        .st-key-folder_panel_admin,
-        .st-key-folder_home_worker,
-        .st-key-folder_home_admin {
+        .st-key-folder_panel_status {
             padding: 8px !important;
             border-radius: 0 18px 18px 18px;
         }
@@ -2147,10 +2167,8 @@ if st.session_state.화면 == "홈":
 
     여백L, col1, col2, 여백R = st.columns([0.5, 4, 4, 0.5], gap="medium")
 
-    # 첫 화면 카드도 종이 폴더 모양: 위쪽 색인 탭 + 색 겉판 + 흰 종이
+    # 첫 화면 카드: 흰 종이 카드 (탭이 하나뿐인 화면은 폴더 모양 없이)
     with col1:
-
-        폴더탭표시("👷 현장 근로자", "blue")
 
         with st.container(key="folder_home_worker"):
 
@@ -2174,8 +2192,6 @@ if st.session_state.화면 == "홈":
                     st.rerun()
 
     with col2:
-
-        폴더탭표시("🔐 안전관리자", "manila")
 
         with st.container(key="folder_home_admin"):
 
@@ -2570,8 +2586,6 @@ elif (
         홈버튼=False
     )
 
-    폴더탭표시("🔐 관리자 로그인", "manila")
-
     with st.container(key="folder_panel_admin"):
 
         with st.container(key="folder_paper_login"):
@@ -2636,8 +2650,6 @@ elif (
         뒤로=None,
         로그아웃=True
     )
-
-    폴더탭표시("🗂 제보 관리", "manila")
 
     with st.container(key="folder_panel_admin"):
 
