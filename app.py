@@ -897,6 +897,89 @@ st.markdown(
         margin-bottom: 2px;
     }
 
+    /* ===== 제보 목록 한 줄 (내용 → 상태 순으로 읽히게) ===== */
+    .row2 {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        border-left: 4px solid var(--hc-line);
+        padding: 2px 0 2px 16px;
+    }
+
+    .row2-main {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    .row2-title {
+        color: var(--hc-ink);
+        font-size: 17px;
+        font-weight: 700;
+        line-height: 1.5;
+        letter-spacing: -0.3px;
+        word-break: break-word;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .row2-meta {
+        margin-top: 6px;
+        color: var(--hc-gray);
+        font-size: 13.5px;
+        line-height: 1.5;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    .row2-dot {
+        color: #B5BAC0;
+        margin: 0 7px;
+    }
+
+    .row2-status {
+        flex: 0 0 auto;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        font-size: 14.5px;
+        font-weight: 700;
+        padding: 7px 14px;
+        border-radius: 999px;
+        white-space: nowrap;
+    }
+
+    .row2-status-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        display: inline-block;
+    }
+
+    /* 오른쪽 › 버튼: 작은 원형, 누르기 쉬운 44px 이상 */
+    div[class*="st-key-card_row_"] .stButton button {
+        min-height: 46px !important;
+        min-width: 46px !important;
+        padding: 0 !important;
+        border: none !important;
+        background-color: var(--hc-surface-2) !important;
+        color: var(--hc-ink-2) !important;
+    }
+
+    div[class*="st-key-card_row_"] .stButton button p {
+        font-size: 26px !important;
+        font-weight: 400 !important;
+        line-height: 1 !important;
+        margin-top: -3px !important;
+    }
+
+    div[class*="st-key-card_row_"]:hover .stButton button {
+        background-color: var(--hc-blue-tonal) !important;
+        color: var(--hc-blue) !important;
+    }
+
     /* ===== 정보 카드 ===== */
     .info-card {
         border: 1px solid var(--hc-line);
@@ -1515,6 +1598,37 @@ st.markdown(
             grid-template-columns: 1fr;
         }
 
+        div[class*="st-key-card_row_"] [data-testid="stHorizontalBlock"] {
+            flex-wrap: nowrap !important;
+            gap: 10px !important;
+        }
+
+        div[class*="st-key-card_row_"] [data-testid="stColumn"] {
+            min-width: 0 !important;
+        }
+
+        div[class*="st-key-card_row_"] [data-testid="stColumn"]:last-child {
+            flex: 0 0 46px !important;
+            width: 46px !important;
+        }
+
+        .row2 {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+            padding-left: 12px;
+        }
+
+        .row2-status {
+            order: -1;
+            font-size: 13.5px;
+            padding: 5px 12px;
+        }
+
+        .row2-title {
+            font-size: 16.5px;
+        }
+
         .stat-wrap .stat-value {
             font-size: 24px;
         }
@@ -2024,38 +2138,55 @@ def 텍스트박스(제목, 본문, 색="basic"):
 
 def 제보행(제보, 버튼키, 부서표시=True, 요약길이=110):
 
+    # 목록 한 줄 구성 (눈이 '내용 → 상태' 순서로 가도록)
+    #   왼쪽 : 상태색 띠 | 내용(굵게) / 부가정보 회색 한 줄
+    #   오른쪽: 상태 표시, 작은 › 버튼
+
     제보ID = 제보.get("id")
     상태 = 제보.get("status", "미조치")
 
     생성시간 = 시간표시(제보.get("created_at"), 짧게=True)
 
-    내용 = 제보.get("description", "-") or "-"
+    # 올해 제보는 연도를 빼서 짧게 (예: 10-14 14:04)
+    올해 = str(datetime.now(KST).year) + "-"
+    if 생성시간.startswith(올해):
+        생성시간 = 생성시간[len(올해):]
+
+    내용 = (제보.get("description", "-") or "-").strip()
 
     if len(내용) > 요약길이:
         내용 = 내용[:요약길이] + " ..."
 
-    태그 = f'<span class="chip chip-tag">{안전(제보.get("risk_type", "-"))}</span>'
+    부가 = [f"#{제보ID}", 제보.get("location") or "-", 제보.get("risk_type") or "-"]
 
     if 부서표시:
-        태그 += f'<span class="chip chip-tag">{안전(제보.get("department", "-"))}</span>'
+        부가.insert(1, 제보.get("department") or "-")
+
+    부가.append(생성시간)
+
+    부가줄 = '<span class="row2-dot">·</span>'.join(
+        f"<span>{안전(x)}</span>" for x in 부가
+    )
+
+    바탕, 글씨 = 상태톤(상태)
 
     눌림 = False
 
     with st.container(border=True, key=f"card_row_{버튼키}"):
 
-        c1, c2 = st.columns([5, 1.35], vertical_alignment="center")
+        c1, c2 = st.columns([9, 1], vertical_alignment="center")
 
         with c1:
             st.markdown(
                 f"""
-                <div class="row-wrap">
-                    <div class="row-top">
-                        <span class="chip chip-status" style="{상태칩스타일(상태)}">{안전(상태)}</span>
-                        <span class="chip chip-id">#{안전(제보ID)}</span>
-                        {태그}
+                <div class="row2" style="border-left-color:{글씨};">
+                    <div class="row2-main">
+                        <div class="row2-title">{안전(내용)}</div>
+                        <div class="row2-meta">{부가줄}</div>
                     </div>
-                    <div class="row-body">{안전(내용)}</div>
-                    <div class="row-meta">📍 {안전(제보.get("location", "-"))} · 🕒 {안전(생성시간)}</div>
+                    <span class="row2-status" style="background-color:{바탕};color:{글씨};">
+                        <span class="row2-status-dot" style="background-color:{글씨};"></span>{안전(상태)}
+                    </span>
                 </div>
                 """,
                 unsafe_allow_html=True
@@ -2063,8 +2194,9 @@ def 제보행(제보, 버튼키, 부서표시=True, 요약길이=110):
 
         with c2:
             눌림 = st.button(
-                "상세 보기 ›",
+                "›",
                 key=버튼키,
+                help="상세 보기",
                 use_container_width=True
             )
 
