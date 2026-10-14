@@ -588,8 +588,27 @@ st.markdown(
     /* 제보 입력·처리 관리처럼 큰 입력 카드는 안쪽 여백 넉넉하게 */
     div[class*="st-key-card_report_form"],
     div[class*="st-key-card_process"],
-    div[class*="st-key-card_login"] {
-        padding: 12px 10px !important;
+    div[class*="st-key-card_login"],
+    div[class*="st-key-card_status_filter"],
+    div[class*="st-key-card_admin_filter"] {
+        padding: 24px 26px !important;
+    }
+
+    div[class*="st-key-card_row_"] {
+        padding: 18px 20px !important;
+    }
+
+    /* 입력칸 높이 (구글처럼 넉넉하게) */
+    div[data-testid="stTextInputRootElement"],
+    .stSelectbox div[role="group"],
+    div[data-baseweb="input"],
+    div[data-baseweb="select"] > div {
+        min-height: 50px !important;
+    }
+
+    div[data-testid="stTextInputRootElement"] input,
+    .stSelectbox div[role="group"] input {
+        padding-left: 14px !important;
     }
 
     /* 목록 카드: 마우스 올리면 살짝 떠오름 */
@@ -1097,8 +1116,174 @@ st.markdown(
         border-radius: 12px !important;
     }
 
+    /* ===== 폴더형 탭 (근로자 화면) =====
+       왼쪽: 색인 탭 / 오른쪽: 폴더 본문
+       제보하기 = 회사 파랑, 처리현황 = 초록                              */
+    .st-key-folder_tabs {
+        gap: 10px !important;
+        padding-top: 22px;
+    }
+
+    .st-key-tab_report button,
+    .st-key-tab_status button {
+        min-height: 74px !important;
+        border-radius: 16px 0 0 16px !important;
+        border: 1px solid var(--hc-line) !important;
+        border-right: none !important;
+        background-color: var(--hc-surface-2) !important;
+        color: var(--hc-gray) !important;
+        padding-left: 20px !important;
+        position: relative;
+        transition: background-color 0.15s ease, color 0.15s ease !important;
+    }
+
+    .st-key-tab_report button div,
+    .st-key-tab_status button div {
+        justify-content: flex-start !important;
+    }
+
+    .st-key-tab_report button p,
+    .st-key-tab_status button p {
+        font-size: 17px !important;
+        font-weight: 700 !important;
+        text-align: left !important;
+        white-space: nowrap;
+    }
+
+    /* 선택 안 된 탭: 왼쪽에 탭 색 표시 */
+    .st-key-tab_report button[kind="secondary"] {
+        box-shadow: inset 5px 0 0 var(--hc-blue) !important;
+    }
+
+    .st-key-tab_status button[kind="secondary"] {
+        box-shadow: inset 5px 0 0 #188038 !important;
+    }
+
+    .st-key-tab_report button[kind="secondary"]:hover,
+    .st-key-tab_status button[kind="secondary"]:hover {
+        background-color: #ECEFF3 !important;
+        color: var(--hc-ink) !important;
+    }
+
+    /* 선택된 탭: 탭 색으로 채우고 오른쪽 본문까지 이어지게 */
+    .st-key-tab_report button[kind="primary"],
+    .st-key-tab_status button[kind="primary"] {
+        color: #FFFFFF !important;
+        width: calc(100% + 18px) !important;
+        margin-right: -18px;
+        z-index: 2;
+        box-shadow: none !important;
+    }
+
+    .st-key-tab_report button[kind="primary"] {
+        background-color: var(--hc-blue) !important;
+        border-color: var(--hc-blue) !important;
+    }
+
+    .st-key-tab_status button[kind="primary"] {
+        background-color: #188038 !important;
+        border-color: #188038 !important;
+    }
+
+    /* 마우스를 올려도 선택된 탭 색이 유지되도록 */
+    .stButton.st-key-tab_report > button[kind="primary"]:hover,
+    .st-key-tab_report button[kind="primary"]:hover {
+        background-color: var(--hc-blue) !important;
+        border-color: var(--hc-blue) !important;
+        box-shadow: none !important;
+    }
+
+    .stButton.st-key-tab_status > button[kind="primary"]:hover,
+    .st-key-tab_status button[kind="primary"]:hover {
+        background-color: #188038 !important;
+        border-color: #188038 !important;
+        box-shadow: none !important;
+    }
+
+    /* 폴더 본문: 선택된 탭과 같은 색 테두리 */
+    .st-key-folder_panel_report,
+    .st-key-folder_panel_status {
+        border: 2px solid var(--hc-blue);
+        border-radius: 22px;
+        padding: 30px 32px 32px 32px !important;
+        background-color: #FFFFFF;
+        min-height: 620px;
+    }
+
+    .st-key-folder_panel_status {
+        border-color: #188038;
+    }
+
+    /* 폴더 안에서는 상자 안의 상자가 생기지 않도록 안쪽 카드 테두리 제거 */
+    .st-key-folder_panel_report div[class*="st-key-card_report_form"] {
+        border: none !important;
+        padding: 0 !important;
+        box-shadow: none !important;
+    }
+
+    .st-key-folder_panel_status div[class*="st-key-card_status_filter"] {
+        border: none !important;
+        background-color: var(--hc-surface-2) !important;
+    }
+
+    .st-key-status_back_list button {
+        background-color: var(--hc-surface-2) !important;
+        border: none !important;
+        padding: 0 20px !important;
+    }
+
     /* ===== 모바일 ===== */
     @media (max-width: 768px) {
+
+        /* 폴더 탭: 휴대폰에서는 위쪽 가로 탭 */
+        .st-key-folder_tabs {
+            flex-direction: row !important;
+            padding-top: 0;
+            gap: 8px !important;
+        }
+
+        .st-key-folder_tabs > div {
+            flex: 1 1 0 !important;
+            width: auto !important;
+        }
+
+        .st-key-tab_report button,
+        .st-key-tab_status button,
+        .st-key-tab_report button[kind="primary"],
+        .st-key-tab_status button[kind="primary"] {
+            min-height: 54px !important;
+            width: 100% !important;
+            margin-right: 0;
+            border-radius: 14px !important;
+            border-right: 1px solid var(--hc-line) !important;
+            padding-left: 12px !important;
+        }
+
+        .st-key-tab_report button div,
+        .st-key-tab_status button div {
+            justify-content: center !important;
+        }
+
+        .st-key-tab_report button[kind="secondary"] {
+            box-shadow: inset 0 -4px 0 var(--hc-blue) !important;
+        }
+
+        .st-key-tab_status button[kind="secondary"] {
+            box-shadow: inset 0 -4px 0 #188038 !important;
+        }
+
+        .st-key-tab_report button p,
+        .st-key-tab_status button p {
+            font-size: 16px !important;
+        }
+
+        .st-key-folder_panel_report,
+        .st-key-folder_panel_status {
+            padding: 20px 16px !important;
+            min-height: 0;
+            border-radius: 18px;
+        }
+
         .block-container {
             padding-top: 14px;
             padding-bottom: 2rem;
@@ -1348,7 +1533,18 @@ def 이동_홈():
 
 
 def 이동_근로자메뉴():
-    st.session_state.화면 = "근로자메뉴"
+    # 근로자 메뉴 화면은 폴더 탭으로 바뀌어, 제보하기 탭으로 이동
+    st.session_state.화면 = "제보"
+    st.session_state.현황상세ID = None
+
+
+def 탭_제보():
+    st.session_state.화면 = "제보"
+    st.session_state.현황상세ID = None
+
+
+def 탭_처리현황():
+    st.session_state.화면 = "처리현황"
     st.session_state.현황상세ID = None
 
 
@@ -1383,12 +1579,13 @@ def 내비게이션(경로, 뒤로=None, 키="top", 홈버튼=True, 로그아웃
 
     오른쪽칸수 = (1 if 홈버튼 else 0) + (1 if 로그아웃 else 0)
 
-    비율 = [1.6, 4.4] + [1.25] * 오른쪽칸수
+    # 뒤로 버튼이 없으면 그 칸을 만들지 않아 경로 표시가 왼쪽 끝부터 시작
+    비율 = ([1.6] if 뒤로 else []) + [4.4] + [1.25] * 오른쪽칸수
 
     칸들 = st.columns(비율, vertical_alignment="center")
 
-    with 칸들[0]:
-        if 뒤로:
+    if 뒤로:
+        with 칸들[0]:
             라벨, 동작 = 뒤로
             st.button(
                 라벨,
@@ -1396,8 +1593,9 @@ def 내비게이션(경로, 뒤로=None, 키="top", 홈버튼=True, 로그아웃
                 on_click=동작,
                 use_container_width=True
             )
+        칸들 = 칸들[1:]
 
-    with 칸들[1]:
+    with 칸들[0]:
         if 경로표시:
             조각 = ['<div class="crumb"><span>🏠 처음</span>']
 
@@ -1413,7 +1611,7 @@ def 내비게이션(경로, 뒤로=None, 키="top", 홈버튼=True, 로그아웃
 
             st.markdown("".join(조각), unsafe_allow_html=True)
 
-    다음칸 = 2
+    다음칸 = 1
 
     if 홈버튼:
         with 칸들[다음칸]:
@@ -1574,13 +1772,13 @@ def 통계바(목록):
         통계카드("전체 제보", 전체수, "#005CAB")
 
     with s2:
-        통계카드("미조치", 미조치수, "#D93025")
+        통계카드("미조치", 미조치수, "#B3261E")
 
     with s3:
-        통계카드("조치중", 조치중수, "#C97A0A")
+        통계카드("조치중", 조치중수, "#9A5B00")
 
     with s4:
-        통계카드("조치완료", 조치완료수, "#1E8E3E")
+        통계카드("조치완료", 조치완료수, "#137333")
 
 
 def 제보정보카드(제보, 제보자표시=False):
@@ -1622,7 +1820,7 @@ def 제보정보카드(제보, 제보자표시=False):
         <div class="info-card">
             <div class="info-card-head">
                 <span class="info-card-title">제보 정보</span>
-                <span class="info-badge" style="background-color:{상태색(카드상태)};">{안전(카드상태)}</span>
+                <span class="info-badge" style="{상태칩스타일(카드상태)}">{안전(카드상태)}</span>
             </div>
             <div class="info-grid">
                 <div class="info-item">
@@ -1681,14 +1879,14 @@ def 제보행(제보, 버튼키, 부서표시=True, 요약길이=110):
 
     with st.container(border=True, key=f"card_row_{버튼키}"):
 
-        c1, c2 = st.columns([6, 1], vertical_alignment="center")
+        c1, c2 = st.columns([5, 1.35], vertical_alignment="center")
 
         with c1:
             st.markdown(
                 f"""
-                <div class="row-wrap" style="border-left-color:{상태색(상태)};">
+                <div class="row-wrap">
                     <div class="row-top">
-                        <span class="chip chip-status" style="background-color:{상태색(상태)};">{안전(상태)}</span>
+                        <span class="chip chip-status" style="{상태칩스타일(상태)}">{안전(상태)}</span>
                         <span class="chip chip-id">#{안전(제보ID)}</span>
                         {태그}
                     </div>
@@ -1843,7 +2041,7 @@ if st.session_state.화면 == "홈":
                 use_container_width=True,
                 key="worker_button"
             ):
-                st.session_state.화면 = "근로자메뉴"
+                st.session_state.화면 = "제보"
                 st.rerun()
 
     with col2:
@@ -1869,379 +2067,372 @@ if st.session_state.화면 == "홈":
 
 
 # =========================================================
-# 7-1. 근로자 메뉴
+# 7-1. 근로자 영역 (폴더형 탭: 왼쪽 탭 / 오른쪽 본문)
+#   - 첫 화면에서 근로자를 누르면 '제보하기' 탭이 먼저 열립니다.
+#   - 왼쪽 탭을 누르면 오른쪽 본문만 바뀝니다.
 # =========================================================
 
-elif st.session_state.화면 == "근로자메뉴":
+elif st.session_state.화면 in ("근로자메뉴", "제보", "처리현황"):
+
+    # 예전 '근로자 메뉴' 화면은 없어졌으므로 제보하기 탭으로 보냄
+    if st.session_state.화면 == "근로자메뉴":
+        st.session_state.화면 = "제보"
+
+    현재탭 = st.session_state.화면
 
     내비게이션(
-        ["근로자"],
+        ["근로자", "제보하기" if 현재탭 == "제보" else "처리현황"],
         뒤로=("← 처음 화면", 이동_홈),
         홈버튼=False
     )
 
-    페이지헤더("근로자", "하시려는 작업을 선택해주세요.")
+    탭칸, 본문칸 = st.columns([1.1, 5], gap="small")
 
-    m1, m2 = st.columns(2, gap="large")
+    with 탭칸:
 
-    with m1:
+        with st.container(key="folder_tabs"):
 
-        if st.button(
-            "**📝 제보하기**\n\n유해·위험요인을 새로 접수합니다.",
-            use_container_width=True,
-            key="menu_report"
-        ):
-            st.session_state.화면 = "제보"
-            st.rerun()
-
-    with m2:
-
-        if st.button(
-            "**📋 처리현황 확인**\n\n접수된 제보의 처리 결과를 봅니다.",
-            use_container_width=True,
-            key="menu_status"
-        ):
-            st.session_state.화면 = "처리현황"
-            st.session_state.현황상세ID = None
-            st.rerun()
-
-
-# =========================================================
-# 8. 근로자 안전제보
-# =========================================================
-
-elif st.session_state.화면 == "제보":
-
-    내비게이션(
-        ["근로자", "안전제보"],
-        뒤로=("← 근로자 메뉴", 이동_근로자메뉴)
-    )
-
-    페이지헤더("안전제보", "현장에서 발견한 유해·위험요인을 입력해주세요.")
-
-    긴급배너()
-
-    with st.container(border=True, key="card_report_form"):
-
-        f1, f2 = st.columns(2)
-
-        with f1:
-            부서 = st.selectbox(
-                "부서",
-                부서목록,
-                key="report_dept"
+            st.button(
+                "📝  제보하기",
+                key="tab_report",
+                type="primary" if 현재탭 == "제보" else "secondary",
+                on_click=탭_제보,
+                use_container_width=True
             )
 
-        with f2:
-            단위작업 = st.selectbox(
-                "단위작업",
-                부서별_단위작업.get(부서, 단위작업목록),
-                key=f"report_task_{부서}"
+            st.button(
+                "📋  처리현황",
+                key="tab_status",
+                type="primary" if 현재탭 == "처리현황" else "secondary",
+                on_click=탭_처리현황,
+                use_container_width=True
             )
 
-        제보자 = st.text_input(
-            "성명 (선택)",
-            placeholder="입력하지 않으면 익명으로 접수됩니다.",
-            max_chars=20
-        )
+    with 본문칸:
 
-        내용 = st.text_area(
-            "유해·위험요인 내용",
-            placeholder="발견한 위험요인을 구체적으로 작성해주세요.",
-            height=190
-        )
+        패널키 = "folder_panel_report" if 현재탭 == "제보" else "folder_panel_status"
 
-        위험유형 = st.selectbox(
-            "위험유형",
-            [AI자동분류] + 위험유형목록,
-            key="report_risk"
-        )
+        with st.container(key=패널키):
 
-        st.write("")
+            # -------------------------------------------------
+            # 탭 1. 제보하기
+            # -------------------------------------------------
 
-        if st.button(
-            "안전제보 등록",
-            type="primary",
-            use_container_width=True,
-            key="submit_report"
-        ):
+            if 현재탭 == "제보":
 
-            if not 내용.strip():
-                st.warning("유해·위험요인 내용을 입력해주세요.")
+                페이지헤더("안전제보", "현장에서 발견한 유해·위험요인을 입력해주세요.")
 
-            else:
-                try:
+                긴급배너()
 
-                    AI분류됨 = False
+                with st.container(border=True, key="card_report_form"):
 
-                    if 위험유형 == AI자동분류:
-                        with st.spinner("AI가 위험유형을 분류하는 중입니다."):
-                            최종유형 = AI_위험유형분류(부서, 단위작업, 내용.strip())
-                        AI분류됨 = True
-                    else:
-                        최종유형 = 위험유형
+                    f1, f2 = st.columns(2)
 
-                    데이터 = {
-                        "department": 부서,
-                        "location": 단위작업,
-                        "risk_type": 최종유형,
-                        "description": 내용.strip(),
-                        "status": "미조치",
-                        "reporter_name": 제보자.strip() or None
-                    }
-
-                    결과 = (
-                        supabase
-                        .table("reports")
-                        .insert(데이터)
-                        .execute()
-                    )
-
-                    if 결과.data:
-                        st.success("안전제보가 정상적으로 등록되었습니다.")
-                        if AI분류됨:
-                            st.info(f"AI가 분류한 위험유형: **{최종유형}** (관리자가 확인 후 수정할 수 있습니다.)")
-                        st.info(
-                            "관리자가 확인 후 처리상태를 변경합니다. 처리현황 확인 메뉴에서 진행 상황을 볼 수 있습니다."
+                    with f1:
+                        부서 = st.selectbox(
+                            "부서",
+                            부서목록,
+                            key="report_dept"
                         )
-                    else:
-                        st.error("제보 등록 결과를 확인할 수 없습니다.")
 
-                except Exception as e:
-                    st.error("제보 등록 중 오류가 발생했습니다.")
-                    st.code(str(e))
+                    with f2:
+                        단위작업 = st.selectbox(
+                            "단위작업",
+                            부서별_단위작업.get(부서, 단위작업목록),
+                            key=f"report_task_{부서}"
+                        )
 
-
-# =========================================================
-# 8-1. 처리현황 확인
-# =========================================================
-
-elif st.session_state.화면 == "처리현황":
-
-    # -----------------------------------------------------
-    # 8-1-1. 처리현황 상세
-    # -----------------------------------------------------
-
-    if st.session_state.현황상세ID is not None:
-
-        현황ID = st.session_state.현황상세ID
-
-        내비게이션(
-            ["근로자", "처리현황", f"#{현황ID}"],
-            뒤로=("← 처리현황 목록", 이동_처리현황목록)
-        )
-
-        try:
-            상세결과 = (
-                supabase
-                .table("reports")
-                .select("*")
-                .eq("id", 현황ID)
-                .execute()
-            )
-
-            제보 = 상세결과.data[0] if 상세결과.data else None
-
-        except Exception as e:
-            st.error("제보 정보를 불러오는 중 오류가 발생했습니다.")
-            st.code(str(e))
-            제보 = None
-
-        페이지헤더("처리결과 상세", f"제보 #{현황ID} 의 처리 진행 상황입니다.")
-
-        if 제보 is None:
-
-            st.warning("해당 제보를 찾을 수 없습니다.")
-
-        else:
-
-            제보정보카드(제보)
-
-            섹션("제보 내용")
-
-            텍스트박스(
-                "접수된 내용",
-                제보.get("description", "-") or "-",
-                "blue"
-            )
-
-            섹션("처리 결과")
-
-            현재상태 = 제보.get("status", "미조치")
-            처리내용 = (제보.get("action_detail") or "").strip()
-
-            if not 처리내용:
-
-                if 현재상태 == "미조치":
-                    st.warning("아직 조치가 시작되지 않았습니다. 관리자가 확인 중입니다.")
-                else:
-                    st.warning(
-                        f"현재 상태는 '{현재상태}' 이며, 등록된 처리내용이 아직 없습니다."
+                    제보자 = st.text_input(
+                        "성명 (선택)",
+                        placeholder="입력하지 않으면 익명으로 접수됩니다.",
+                        max_chars=20
                     )
 
+                    내용 = st.text_area(
+                        "유해·위험요인 내용",
+                        placeholder="발견한 위험요인을 구체적으로 작성해주세요.",
+                        height=190
+                    )
+
+                    위험유형 = st.selectbox(
+                        "위험유형",
+                        [AI자동분류] + 위험유형목록,
+                        key="report_risk"
+                    )
+
+                    st.write("")
+
+                    if st.button(
+                        "안전제보 등록",
+                        type="primary",
+                        use_container_width=True,
+                        key="submit_report"
+                    ):
+
+                        if not 내용.strip():
+                            st.warning("유해·위험요인 내용을 입력해주세요.")
+
+                        else:
+                            try:
+
+                                AI분류됨 = False
+
+                                if 위험유형 == AI자동분류:
+                                    with st.spinner("AI가 위험유형을 분류하는 중입니다."):
+                                        최종유형 = AI_위험유형분류(부서, 단위작업, 내용.strip())
+                                    AI분류됨 = True
+                                else:
+                                    최종유형 = 위험유형
+
+                                데이터 = {
+                                    "department": 부서,
+                                    "location": 단위작업,
+                                    "risk_type": 최종유형,
+                                    "description": 내용.strip(),
+                                    "status": "미조치",
+                                    "reporter_name": 제보자.strip() or None
+                                }
+
+                                결과 = (
+                                    supabase
+                                    .table("reports")
+                                    .insert(데이터)
+                                    .execute()
+                                )
+
+                                if 결과.data:
+                                    st.success("안전제보가 정상적으로 등록되었습니다.")
+                                    if AI분류됨:
+                                        st.info(f"AI가 분류한 위험유형: **{최종유형}** (관리자가 확인 후 수정할 수 있습니다.)")
+                                    st.info(
+                                        "관리자가 확인 후 처리상태를 변경합니다. 왼쪽 처리현황 탭에서 진행 상황을 볼 수 있습니다."
+                                    )
+                                else:
+                                    st.error("제보 등록 결과를 확인할 수 없습니다.")
+
+                            except Exception as e:
+                                st.error("제보 등록 중 오류가 발생했습니다.")
+                                st.code(str(e))
+
+            # -------------------------------------------------
+            # 탭 2. 처리현황 확인
+            # -------------------------------------------------
+
             else:
 
-                텍스트박스("조치 내용", 처리내용, "green")
+                # -----------------------------------------------------
+                # 8-1-1. 처리현황 상세
+                # -----------------------------------------------------
 
-            일정섹션(제보)
+                if st.session_state.현황상세ID is not None:
 
-    # -----------------------------------------------------
-    # 8-1-2. 처리현황 목록
-    # -----------------------------------------------------
+                    현황ID = st.session_state.현황상세ID
 
-    else:
+                    st.button(
+                        "← 목록으로",
+                        key="status_back_list",
+                        on_click=이동_처리현황목록
+                    )
 
-        내비게이션(
-            ["근로자", "처리현황"],
-            뒤로=("← 근로자 메뉴", 이동_근로자메뉴)
-        )
+                    try:
+                        상세결과 = (
+                            supabase
+                            .table("reports")
+                            .select("*")
+                            .eq("id", 현황ID)
+                            .execute()
+                        )
 
-        페이지헤더(
-            "안전제보 처리현황",
-            "접수된 전체 안전제보와 처리 진행 상황입니다."
-        )
+                        제보 = 상세결과.data[0] if 상세결과.data else None
 
-        try:
+                    except Exception as e:
+                        st.error("제보 정보를 불러오는 중 오류가 발생했습니다.")
+                        st.code(str(e))
+                        제보 = None
 
-            결과 = (
-                supabase
-                .table("reports")
-                .select("*")
-                .order("id", desc=True)
-                .execute()
-            )
+                    페이지헤더("처리결과 상세", f"제보 #{현황ID} 의 처리 진행 상황입니다.")
 
-            현황목록 = 결과.data if 결과.data else []
+                    if 제보 is None:
 
-        except Exception as e:
+                        st.warning("해당 제보를 찾을 수 없습니다.")
 
-            st.error("제보 데이터를 불러오는 중 오류가 발생했습니다.")
-            st.code(str(e))
-            현황목록 = []
+                    else:
 
-        통계바(현황목록)
+                        제보정보카드(제보)
 
-        섹션("조회 조건")
+                        섹션("제보 내용")
 
-        with st.container(border=True, key="card_status_filter"):
+                        텍스트박스(
+                            "접수된 내용",
+                            제보.get("description", "-") or "-",
+                            "blue"
+                        )
 
-            현황검색어 = st.text_input(
-                "검색어",
-                placeholder="🔍 키워드를 검색하세요.",
-                key="status_keyword"
-            )
+                        섹션("처리 결과")
 
-            f1, f2, f3, f4 = st.columns(4)
+                        현재상태 = 제보.get("status", "미조치")
+                        처리내용 = (제보.get("action_detail") or "").strip()
 
-            with f1:
-                현황부서필터 = st.selectbox(
-                    "부서",
-                    ["전체"] + 부서목록,
-                    key="status_dept_filter"
-                )
+                        if not 처리내용:
 
-            if 현황부서필터 == "전체":
-                선택가능작업 = 단위작업목록
-            else:
-                선택가능작업 = 부서별_단위작업.get(현황부서필터, 단위작업목록)
+                            if 현재상태 == "미조치":
+                                st.warning("아직 조치가 시작되지 않았습니다. 관리자가 확인 중입니다.")
+                            else:
+                                st.warning(
+                                    f"현재 상태는 '{현재상태}' 이며, 등록된 처리내용이 아직 없습니다."
+                                )
 
-            with f2:
-                현황장소필터 = st.selectbox(
-                    "단위작업",
-                    ["전체"] + 선택가능작업,
-                    key=f"status_task_filter_{현황부서필터}"
-                )
+                        else:
 
-            with f3:
-                현황위험필터 = st.selectbox(
-                    "위험유형",
-                    ["전체"] + 위험유형목록,
-                    key="status_risk_filter"
-                )
+                            텍스트박스("조치 내용", 처리내용, "green")
 
-            with f4:
-                현황상태필터 = st.selectbox(
-                    "처리상태",
-                    ["전체"] + 상태목록,
-                    key="status_filter"
-                )
+                        일정섹션(제보)
 
-        현황결과 = []
+                # -----------------------------------------------------
+                # 8-1-2. 처리현황 목록
+                # -----------------------------------------------------
 
-        for 제보 in 현황목록:
+                else:
 
-            if (
-                현황부서필터 != "전체"
-                and 제보.get("department") != 현황부서필터
-            ):
-                continue
+                    페이지헤더(
+                        "안전제보 처리현황",
+                        "접수된 전체 안전제보와 처리 진행 상황입니다."
+                    )
 
-            if (
-                현황위험필터 != "전체"
-                and 제보.get("risk_type") != 현황위험필터
-            ):
-                continue
+                    try:
 
-            if (
-                현황상태필터 != "전체"
-                and 제보.get("status") != 현황상태필터
-            ):
-                continue
+                        결과 = (
+                            supabase
+                            .table("reports")
+                            .select("*")
+                            .order("id", desc=True)
+                            .execute()
+                        )
 
-            if (
-                현황장소필터 != "전체"
-                and 제보.get("location") != 현황장소필터
-            ):
-                continue
+                        현황목록 = 결과.data if 결과.data else []
 
-            if 현황검색어.strip():
+                    except Exception as e:
 
-                현황검색대상 = " ".join(
-                    [
-                        str(제보.get("department", "")),
-                        str(제보.get("location", "")),
-                        str(제보.get("risk_type", "")),
-                        str(제보.get("description", "")),
-                        str(제보.get("action_detail", "") or ""),
-                        str(제보.get("status", ""))
-                    ]
-                )
+                        st.error("제보 데이터를 불러오는 중 오류가 발생했습니다.")
+                        st.code(str(e))
+                        현황목록 = []
 
-                if 현황검색어.strip().lower() not in 현황검색대상.lower():
-                    continue
+                    통계바(현황목록)
 
-            현황결과.append(제보)
+                    섹션("조회 조건")
 
-        섹션("제보 목록")
+                    with st.container(border=True, key="card_status_filter"):
 
-        st.markdown(
-            f'<div class="list-count">조회 결과 <b>{len(현황결과)}</b>건</div>',
-            unsafe_allow_html=True
-        )
+                        현황검색어 = st.text_input(
+                            "검색어",
+                            placeholder="🔍 키워드를 검색하세요.",
+                            key="status_keyword"
+                        )
 
-        if not 현황결과:
+                        f1, f2, f3, f4 = st.columns(4)
 
-            st.info("조건에 맞는 제보가 없습니다.")
+                        with f1:
+                            현황부서필터 = st.selectbox(
+                                "부서",
+                                ["전체"] + 부서목록,
+                                key="status_dept_filter"
+                            )
 
-        else:
+                        if 현황부서필터 == "전체":
+                            선택가능작업 = 단위작업목록
+                        else:
+                            선택가능작업 = 부서별_단위작업.get(현황부서필터, 단위작업목록)
 
-            for 제보 in 현황결과:
+                        with f2:
+                            현황장소필터 = st.selectbox(
+                                "단위작업",
+                                ["전체"] + 선택가능작업,
+                                key=f"status_task_filter_{현황부서필터}"
+                            )
 
-                if 제보행(
-                    제보,
-                    f"status_detail_{제보.get('id')}",
-                    부서표시=False
-                ):
-                    st.session_state.현황상세ID = 제보.get("id")
-                    st.rerun()
+                        with f3:
+                            현황위험필터 = st.selectbox(
+                                "위험유형",
+                                ["전체"] + 위험유형목록,
+                                key="status_risk_filter"
+                            )
 
-        # 목록이 길어서 맨 아래에도 이동 버튼을 둡니다.
-        내비게이션(
-            ["근로자", "처리현황"],
-            뒤로=("← 근로자 메뉴", 이동_근로자메뉴),
-            키="bottom",
-            경로표시=False
-        )
+                        with f4:
+                            현황상태필터 = st.selectbox(
+                                "처리상태",
+                                ["전체"] + 상태목록,
+                                key="status_filter"
+                            )
+
+                    현황결과 = []
+
+                    for 제보 in 현황목록:
+
+                        if (
+                            현황부서필터 != "전체"
+                            and 제보.get("department") != 현황부서필터
+                        ):
+                            continue
+
+                        if (
+                            현황위험필터 != "전체"
+                            and 제보.get("risk_type") != 현황위험필터
+                        ):
+                            continue
+
+                        if (
+                            현황상태필터 != "전체"
+                            and 제보.get("status") != 현황상태필터
+                        ):
+                            continue
+
+                        if (
+                            현황장소필터 != "전체"
+                            and 제보.get("location") != 현황장소필터
+                        ):
+                            continue
+
+                        if 현황검색어.strip():
+
+                            현황검색대상 = " ".join(
+                                [
+                                    str(제보.get("department", "")),
+                                    str(제보.get("location", "")),
+                                    str(제보.get("risk_type", "")),
+                                    str(제보.get("description", "")),
+                                    str(제보.get("action_detail", "") or ""),
+                                    str(제보.get("status", ""))
+                                ]
+                            )
+
+                            if 현황검색어.strip().lower() not in 현황검색대상.lower():
+                                continue
+
+                        현황결과.append(제보)
+
+                    섹션("제보 목록")
+
+                    st.markdown(
+                        f'<div class="list-count">조회 결과 <b>{len(현황결과)}</b>건</div>',
+                        unsafe_allow_html=True
+                    )
+
+                    if not 현황결과:
+
+                        st.info("조건에 맞는 제보가 없습니다.")
+
+                    else:
+
+                        for 제보 in 현황결과:
+
+                            if 제보행(
+                                제보,
+                                f"status_detail_{제보.get('id')}",
+                                부서표시=False
+                            ):
+                                st.session_state.현황상세ID = 제보.get("id")
+                                st.rerun()
+
 
 
 # =========================================================
