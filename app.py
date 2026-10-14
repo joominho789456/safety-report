@@ -1309,6 +1309,7 @@ st.markdown(
     /* 탭이 하나뿐인 화면(첫 화면·관리자 로그인·제보 관리)은 폴더 겉판 없이
        흰 종이 카드만: 얇은 테두리 + 은은한 그림자                           */
     .st-key-folder_panel_admin,
+    .st-key-folder_panel_login,
     .st-key-folder_home_worker,
     .st-key-folder_home_admin {
         background-color: transparent !important;
@@ -1324,6 +1325,20 @@ st.markdown(
         border: 1px solid var(--hc-line);
         border-radius: 22px;
         box-shadow: 0 1px 2px rgba(60, 64, 67, 0.08), 0 4px 14px rgba(60, 64, 67, 0.06);
+    }
+
+    /* 관리자 제보 관리(목록·상세): 탭 없이 연한 하늘색 두꺼운 테두리(겉판)만 */
+    .st-key-folder_panel_admin {
+        background-color: var(--folder-blue) !important;
+        padding: 14px !important;
+        border-radius: 22px !important;
+        box-shadow: 0 1px 2px rgba(60, 64, 67, 0.12), 0 6px 16px rgba(60, 64, 67, 0.08) !important;
+    }
+
+    .st-key-folder_panel_admin div[class*="st-key-folder_paper_admin"] {
+        border: none;
+        border-radius: 14px;
+        box-shadow: 0 1px 2px rgba(60, 64, 67, 0.16);
     }
 
     /* 첫 화면 카드: 마우스 올리면 살짝 들림 */
@@ -1406,6 +1421,11 @@ st.markdown(
         div[class*="st-key-folder_paper"] {
             padding: 20px 16px 24px 16px !important;
             min-height: 0;
+        }
+
+        .st-key-folder_panel_admin {
+            padding: 8px !important;
+            border-radius: 18px !important;
         }
 
         div[class*="st-key-folder_paper_home"] {
@@ -2586,7 +2606,7 @@ elif (
         홈버튼=False
     )
 
-    with st.container(key="folder_panel_admin"):
+    with st.container(key="folder_panel_login"):
 
         with st.container(key="folder_paper_login"):
 
