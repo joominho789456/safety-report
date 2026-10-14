@@ -1171,6 +1171,88 @@ st.markdown(
         font-weight: 600;
     }
 
+    /* ===== AI 조치방안 카드 ===== */
+    .st-key-ai_panel {
+        background-color: #F4F7FC;
+        border: 1px solid #DCE5F2;
+        border-radius: 18px;
+        padding: 18px 20px !important;
+        margin-top: 30px;
+    }
+
+    .ai-head {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .ai-badge {
+        flex: 0 0 auto;
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #2F6FD6, #6A5CD8);
+        color: #FFFFFF;
+        font-size: 14px;
+        font-weight: 800;
+        letter-spacing: 0.5px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .ai-title {
+        color: var(--hc-ink);
+        font-size: 17px;
+        font-weight: 700;
+        letter-spacing: -0.3px;
+    }
+
+    .ai-sub {
+        color: var(--hc-gray);
+        font-size: 14px;
+        margin-top: 2px;
+    }
+
+    /* 생성 버튼: 카드 안에서 튀지 않는 흰 테두리 버튼 */
+    .st-key-ai_panel .stButton button {
+        background-color: #FFFFFF !important;
+        border: 1px solid #C9D6EA !important;
+        color: var(--hc-blue) !important;
+        min-height: 44px !important;
+    }
+
+    .st-key-ai_panel .stButton button:hover {
+        background-color: var(--hc-blue-tonal) !important;
+        border-color: var(--hc-blue-tonal) !important;
+    }
+
+    .st-key-ai_panel .stButton button p {
+        font-weight: 700 !important;
+    }
+
+    .st-key-ai_panel [data-testid="stMarkdownContainer"] {
+        margin-bottom: 0 !important;
+    }
+
+    .ai-result {
+        margin-top: 4px;
+        background-color: #FFFFFF;
+        border-radius: 12px;
+        padding: 16px 18px;
+        color: var(--hc-ink);
+        font-size: 15.5px;
+        line-height: 1.8;
+        white-space: pre-line;
+        word-break: break-word;
+    }
+
+    .ai-note {
+        margin-top: 10px;
+        color: var(--hc-gray);
+        font-size: 13px;
+    }
+
     /* ===== 정보 카드 ===== */
     .info-card {
         border: 1px solid var(--hc-line);
@@ -1947,10 +2029,9 @@ def 날짜표시(값):
 
 
 # 관리자 처리내용 기본 양식
-처리내용양식 = """■ 조치 담당:
-■ 조치 내용:
-■ 재발 방지 대책:
-■ 비고:"""
+처리내용양식 = """■ 조치담당:
+■ 조치내용:
+■ 특이사항:"""
 
 
 def 양식정리(글):
@@ -3182,46 +3263,53 @@ elif (
                     # AI 조치방안 추천
                     # -------------------------------------------------
 
-                    섹션("AI 조치방안 추천")
+                    # 한 장의 카드: 제목·설명 | 생성 버튼 → 결과 → 작은 안내
+                    with st.container(key="ai_panel"):
 
-                    st.markdown(
-                        """
-                        <div class="ai-warn">
-                        ⚠️ AI가 생성한 참고 초안입니다. 반드시 안전관리자가 검토·수정한 후 저장하세요.
-                        </div>
-                        """,
-                        unsafe_allow_html=True
-                    )
+                        있음 = AI결과키 in st.session_state
 
-                    # 생성만 하고, 처리내용에는 관리자가 직접 골라 옮겨 적음
-                    if st.button(
-                        "🤖 AI 조치방안 생성",
-                        type="primary",
-                        key=f"ai_gen_{상세ID}"
-                    ):
+                        왼, 오 = st.columns([4, 1.3], vertical_alignment="center")
 
-                        with st.spinner("조치방안을 작성하는 중입니다."):
-
-                            결과텍스트, 오류 = AI_조치방안(
-                                제보.get("department", ""),
-                                제보.get("location", ""),
-                                제보.get("risk_type", ""),
-                                제보.get("description", "")
+                        with 왼:
+                            st.markdown(
+                                '<div class="ai-head">'
+                                '<span class="ai-badge">AI</span>'
+                                '<div><div class="ai-title">조치방안 추천</div>'
+                                '<div class="ai-sub">제보 내용을 바탕으로 조치 초안을 만들어 드립니다.</div></div>'
+                                '</div>',
+                                unsafe_allow_html=True
                             )
 
-                        if 오류:
-                            st.error(오류)
-                        else:
-                            st.session_state[AI결과키] = 결과텍스트
-                            st.rerun()
+                        with 오:
+                            생성 = st.button(
+                                "다시 생성" if 있음 else "초안 생성",
+                                key=f"ai_gen_{상세ID}",
+                                use_container_width=True
+                            )
 
-                    if AI결과키 in st.session_state:
+                        if 생성:
 
-                        텍스트박스(
-                            "AI 제안 조치방안",
-                            st.session_state[AI결과키],
-                            "blue"
-                        )
+                            with st.spinner("조치방안을 작성하는 중입니다."):
+
+                                결과텍스트, 오류 = AI_조치방안(
+                                    제보.get("department", ""),
+                                    제보.get("location", ""),
+                                    제보.get("risk_type", ""),
+                                    제보.get("description", "")
+                                )
+
+                            if 오류:
+                                st.error(오류)
+                            else:
+                                st.session_state[AI결과키] = 결과텍스트
+                                st.rerun()
+
+                        if 있음:
+                            st.markdown(
+                                f'<div class="ai-result">{안전(st.session_state[AI결과키])}</div>'
+                                '<div class="ai-note">AI가 만든 참고 초안입니다. 검토 후 필요한 내용만 처리내용에 옮겨 적어주세요.</div>',
+                                unsafe_allow_html=True
+                            )
 
                     # -------------------------------------------------
                     # 처리 관리
@@ -3250,7 +3338,7 @@ elif (
                             현재유형 = "기타"
 
                         새로운유형 = st.selectbox(
-                            "위험유형 (AI 분류가 맞지 않으면 수정)",
+                            "위험유형 (AI 자동분류)",
                             위험유형목록,
                             index=위험유형목록.index(현재유형),
                             key=f"detail_risk_{상세ID}"
