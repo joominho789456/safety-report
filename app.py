@@ -321,30 +321,39 @@ st.markdown(
     """
     <style>
 
+    /* 한글 가독성이 좋은 Pretendard 글꼴 (불러오지 못하면 기본 글꼴로 표시) */
+    @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css");
+
     /* ===== 컬러 토큰 ===== */
     :root {
         --hc-blue:        #005CAB;
         --hc-blue-dark:   #00477F;
         --hc-blue-soft:   #E9F2FA;
         --hc-blue-line:   #CFE0EF;
-        --hc-gray:        #717073;
+        --hc-gray:        #5F6368;
         --hc-gray-soft:   #F1F3F5;
-        --hc-line:        #E3E7EB;
+        --hc-line:        #E1E6EC;
         --hc-ink:         #1A1D21;
-        --hc-bg:          #FFFFFF;
+        --hc-bg:          #F4F7FA;
+        --hc-card:        #FFFFFF;
         --hc-red:         #D93025;
         --hc-amber:       #C97A0A;
         --hc-green:       #1E8E3E;
+        --hc-shadow:      0 1px 2px rgba(16, 24, 40, 0.04), 0 4px 14px rgba(16, 24, 40, 0.05);
     }
 
     /* ===== 기본 ===== */
+    html, body, .stApp, button, input, textarea, select {
+        font-family: "Pretendard", -apple-system, BlinkMacSystemFont, "Malgun Gothic", sans-serif !important;
+    }
+
     .stApp {
         background-color: var(--hc-bg);
     }
 
     .block-container {
-        max-width: 1180px;
-        padding-top: 2.2rem;
+        max-width: 1120px;
+        padding-top: 1.6rem;
         padding-bottom: 4rem;
     }
 
@@ -362,18 +371,20 @@ st.markdown(
         border-color: var(--hc-line) !important;
     }
 
-    /* ===== 버튼 ===== */
-    .stButton > button {
+    /* ===== 일반 버튼 ===== */
+    .stButton > button,
+    .stDownloadButton > button {
         border-radius: 10px;
         font-weight: 600;
         min-height: 46px;
         border: 1px solid var(--hc-line);
         background-color: #FFFFFF;
-        color: var(--hc-gray);
+        color: var(--hc-ink);
         transition: all 0.15s ease;
     }
 
-    .stButton > button:hover {
+    .stButton > button:hover,
+    .stDownloadButton > button:hover {
         border-color: var(--hc-blue);
         color: var(--hc-blue);
         background-color: var(--hc-blue-soft);
@@ -392,74 +403,164 @@ st.markdown(
         box-shadow: 0 4px 12px rgba(0, 92, 171, 0.28);
     }
 
+    /* ===== 페이지 이동 바 (상단·하단 공통) ===== */
+    .nav-line {
+        height: 1px;
+        background-color: var(--hc-line);
+        margin: 10px 0 18px 0;
+    }
+
+    .nav-line.bottom {
+        margin: 26px 0 12px 0;
+    }
+
+    .crumb {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 2px;
+        font-size: 14px;
+        color: var(--hc-gray);
+        padding-left: 6px;
+    }
+
+    .crumb .sep {
+        color: #AEB8C4;
+        margin: 0 8px;
+        font-weight: 700;
+    }
+
+    .crumb .now {
+        color: var(--hc-blue);
+        font-weight: 700;
+        background-color: var(--hc-blue-soft);
+        padding: 4px 11px;
+        border-radius: 999px;
+    }
+
+    /* ← 이전 화면: 파란색으로 가장 눈에 띄게 */
+    div[class*="st-key-navback"] button {
+        background-color: var(--hc-blue) !important;
+        color: #FFFFFF !important;
+        border: 1px solid var(--hc-blue) !important;
+        font-size: 15px !important;
+        font-weight: 700 !important;
+        min-height: 46px !important;
+        box-shadow: 0 3px 10px rgba(0, 92, 171, 0.25) !important;
+    }
+
+    div[class*="st-key-navback"] button:hover {
+        background-color: var(--hc-blue-dark) !important;
+        border-color: var(--hc-blue-dark) !important;
+        transform: translateX(-2px);
+    }
+
+    /* 🏠 처음 화면: 흰 바탕 + 파란 테두리 */
+    div[class*="st-key-navhome"] button {
+        background-color: #FFFFFF !important;
+        color: var(--hc-blue) !important;
+        border: 2px solid var(--hc-blue) !important;
+        font-size: 15px !important;
+        font-weight: 700 !important;
+        min-height: 46px !important;
+    }
+
+    div[class*="st-key-navhome"] button:hover {
+        background-color: var(--hc-blue-soft) !important;
+    }
+
+    /* 로그아웃: 회색, 마우스 올리면 빨간색 */
+    div[class*="st-key-navlogout"] button {
+        background-color: #FFFFFF !important;
+        color: var(--hc-gray) !important;
+        border: 1px solid #C9D1DA !important;
+        font-weight: 700 !important;
+        min-height: 46px !important;
+    }
+
+    div[class*="st-key-navlogout"] button:hover {
+        color: var(--hc-red) !important;
+        border-color: var(--hc-red) !important;
+        background-color: #FFF5F4 !important;
+    }
+
     /* ===== 입력 요소 ===== */
     .stTextInput input,
     .stTextArea textarea {
         border-radius: 8px !important;
+        background-color: #FFFFFF !important;
     }
 
     .stTextInput input:focus,
     .stTextArea textarea:focus {
         border-color: var(--hc-blue) !important;
-        box-shadow: 0 0 0 2px rgba(0, 92, 171, 0.15) !important;
+        box-shadow: 0 0 0 3px rgba(0, 92, 171, 0.15) !important;
     }
 
     div[data-baseweb="select"] > div {
         border-radius: 8px !important;
+        background-color: #FFFFFF !important;
     }
 
     div[data-baseweb="select"] > div:focus-within {
         border-color: var(--hc-blue) !important;
-        box-shadow: 0 0 0 2px rgba(0, 92, 171, 0.15) !important;
+        box-shadow: 0 0 0 3px rgba(0, 92, 171, 0.15) !important;
     }
 
     .stTextInput label,
     .stTextArea label,
-    .stSelectbox label {
-        color: var(--hc-gray) !important;
-        font-weight: 600 !important;
-        font-size: 13px !important;
+    .stSelectbox label,
+    .stDateInput label {
+        color: var(--hc-ink) !important;
+        font-weight: 700 !important;
+        font-size: 13.5px !important;
     }
 
     /* ===== 컨테이너 카드 ===== */
     div[data-testid="stVerticalBlockBorderWrapper"] {
-        background-color: #FFFFFF;
-        border-radius: 12px !important;
+        background-color: var(--hc-card);
+        border-radius: 14px !important;
         border: 1px solid var(--hc-line) !important;
-        box-shadow: 0 1px 3px rgba(16, 24, 40, 0.05);
+        box-shadow: var(--hc-shadow);
     }
 
     /* ===== 페이지 헤더 ===== */
     .page-head {
         display: flex;
         align-items: center;
-        gap: 16px;
-        background-color: #FFFFFF;
+        gap: 18px;
+        background: linear-gradient(100deg, #FFFFFF 55%, var(--hc-blue-soft) 100%);
         border: 1px solid var(--hc-line);
         border-left: 6px solid var(--hc-blue);
-        border-radius: 12px;
-        padding: 18px 24px;
+        border-radius: 14px;
+        padding: 20px 26px;
         margin-bottom: 22px;
-        box-shadow: 0 1px 4px rgba(16, 24, 40, 0.04);
+        box-shadow: var(--hc-shadow);
     }
 
     .page-head img {
-        height: 40px;
+        height: 38px;
         object-fit: contain;
+    }
+
+    .page-head .ph-div {
+        width: 1px;
+        height: 38px;
+        background-color: #C3CFDB;
     }
 
     .page-head .ph-title {
         color: var(--hc-blue);
-        font-size: 26px;
-        font-weight: 700;
+        font-size: 25px;
+        font-weight: 800;
         line-height: 1.25;
-        letter-spacing: -0.5px;
+        letter-spacing: -0.6px;
     }
 
     .page-head .ph-sub {
         color: var(--hc-gray);
         font-size: 14px;
-        margin-top: 3px;
+        margin-top: 4px;
     }
 
     /* ===== 홈 헤더 ===== */
@@ -468,7 +569,7 @@ st.markdown(
         justify-content: center;
         align-items: center;
         gap: 14px;
-        margin-bottom: 14px;
+        margin: 18px 0 10px 0;
         flex-wrap: wrap;
     }
 
@@ -496,17 +597,24 @@ st.markdown(
     .home-info {
         text-align: center;
         color: var(--hc-gray);
-        font-size: 16.5px;
-        line-height: 1.75;
-        margin-bottom: 34px;
+        font-size: 16px;
+        line-height: 1.7;
+        margin-bottom: 22px;
     }
 
     /* ===== 홈 진입 카드 ===== */
     div[data-testid="stVerticalBlockBorderWrapper"]:has(.home-card-mark) {
         border: 2px solid #BCD5EA !important;
-        border-radius: 18px !important;
+        border-radius: 20px !important;
         background-color: #FFFFFF;
-        box-shadow: 0 4px 16px rgba(0, 92, 171, 0.10);
+        box-shadow: 0 6px 20px rgba(0, 92, 171, 0.10);
+        transition: all 0.18s ease;
+    }
+
+    div[data-testid="stVerticalBlockBorderWrapper"]:has(.home-card-mark):hover {
+        border-color: var(--hc-blue) !important;
+        box-shadow: 0 10px 28px rgba(0, 92, 171, 0.18);
+        transform: translateY(-3px);
     }
 
     .home-card-mark {
@@ -516,7 +624,7 @@ st.markdown(
     .home-photo {
         width: 100%;
         aspect-ratio: 4 / 3;
-        border-radius: 12px;
+        border-radius: 14px;
         overflow: hidden;
         background-color: var(--hc-blue-soft);
         display: flex;
@@ -533,18 +641,25 @@ st.markdown(
         display: block;
     }
 
+    .home-card-desc {
+        text-align: center;
+        color: var(--hc-gray);
+        font-size: 14.5px;
+        margin: 8px 0 4px 0;
+    }
+
     .st-key-worker_button button,
     .st-key-admin_button button {
-        min-height: 74px !important;
+        min-height: 70px !important;
     }
 
     .st-key-worker_button button p,
     .st-key-admin_button button p,
     .st-key-worker_button button div,
     .st-key-admin_button button div {
-        font-size: 30px !important;
-        font-weight: 500 !important;
-        letter-spacing: 5px !important;
+        font-size: 28px !important;
+        font-weight: 700 !important;
+        letter-spacing: 4px !important;
         line-height: 1.3 !important;
         margin: 0 !important;
     }
@@ -552,7 +667,7 @@ st.markdown(
     /* ===== 근로자 메뉴 카드버튼 ===== */
     .st-key-menu_report button,
     .st-key-menu_status button {
-        min-height: 176px !important;
+        min-height: 180px !important;
         font-size: 16px !important;
         font-weight: 500 !important;
         letter-spacing: 0 !important;
@@ -560,11 +675,11 @@ st.markdown(
         white-space: pre-line !important;
         padding: 26px 24px !important;
         border: 2px solid var(--hc-blue-line) !important;
-        border-top: 5px solid var(--hc-blue) !important;
-        border-radius: 16px !important;
+        border-top: 6px solid var(--hc-blue) !important;
+        border-radius: 18px !important;
         background-color: #FFFFFF !important;
         color: var(--hc-blue) !important;
-        box-shadow: 0 3px 12px rgba(0, 92, 171, 0.08) !important;
+        box-shadow: 0 4px 14px rgba(0, 92, 171, 0.08) !important;
     }
 
     .st-key-menu_report button:hover,
@@ -572,10 +687,10 @@ st.markdown(
         background-color: var(--hc-blue) !important;
         color: #FFFFFF !important;
         border-color: var(--hc-blue) !important;
-        box-shadow: 0 6px 18px rgba(0, 92, 171, 0.25) !important;
+        box-shadow: 0 8px 22px rgba(0, 92, 171, 0.28) !important;
+        transform: translateY(-3px);
     }
 
-    /* 카드버튼 제목 (마크다운 굵게 부분) */
     .st-key-menu_report button strong,
     .st-key-menu_status button strong {
         display: block;
@@ -586,7 +701,6 @@ st.markdown(
         margin-bottom: 10px;
     }
 
-    /* 카드버튼 설명 문구 */
     .st-key-menu_report button p,
     .st-key-menu_status button p {
         font-size: 16px !important;
@@ -601,13 +715,31 @@ st.markdown(
         opacity: 1;
     }
 
+    /* 제보 등록 버튼은 크게 */
+    .st-key-submit_report button,
+    .st-key-login_button button {
+        min-height: 54px !important;
+        font-size: 17px !important;
+        font-weight: 800 !important;
+    }
+
     /* ===== 통계 카드 ===== */
     .stat-wrap {
         background-color: #FFFFFF;
         border: 1px solid var(--hc-line);
-        border-radius: 12px;
-        padding: 16px 18px;
-        box-shadow: 0 1px 3px rgba(16, 24, 40, 0.05);
+        border-radius: 14px;
+        padding: 16px 18px 14px 18px;
+        box-shadow: var(--hc-shadow);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .stat-wrap .stat-bar {
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: 0;
+        height: 4px;
     }
 
     .stat-wrap .stat-label {
@@ -618,6 +750,7 @@ st.markdown(
         display: flex;
         align-items: center;
         gap: 7px;
+        margin-top: 2px;
     }
 
     .stat-wrap .stat-dot {
@@ -628,20 +761,32 @@ st.markdown(
     }
 
     .stat-wrap .stat-value {
-        font-size: 30px;
+        font-size: 32px;
         font-weight: 800;
-        line-height: 1.2;
+        line-height: 1.15;
         margin-top: 8px;
         letter-spacing: -1px;
     }
 
+    .stat-wrap .stat-unit {
+        font-size: 15px;
+        font-weight: 600;
+        margin-left: 3px;
+        color: var(--hc-gray);
+    }
+
     /* ===== 목록 행 ===== */
+    .row-wrap {
+        border-left: 4px solid var(--hc-line);
+        padding-left: 14px;
+    }
+
     .row-top {
         display: flex;
         align-items: center;
         gap: 8px;
         flex-wrap: wrap;
-        margin-bottom: 8px;
+        margin: 2px 0 8px 0;
     }
 
     .chip {
@@ -678,12 +823,8 @@ st.markdown(
     .row-meta {
         color: var(--hc-gray);
         font-size: 12.5px;
-        margin-top: 9px;
-        margin-bottom: 6px;
-    }
-
-    .row-top {
-        margin-top: 2px;
+        margin-top: 8px;
+        margin-bottom: 4px;
     }
 
     /* ===== 정보 카드 ===== */
@@ -693,7 +834,7 @@ st.markdown(
         border-radius: 14px;
         background-color: #FFFFFF;
         padding: 22px 28px 8px 28px;
-        box-shadow: 0 1px 6px rgba(16, 24, 40, 0.05);
+        box-shadow: var(--hc-shadow);
         margin-bottom: 12px;
     }
 
@@ -709,7 +850,7 @@ st.markdown(
     .info-card-title {
         color: var(--hc-blue);
         font-size: 20px;
-        font-weight: 700;
+        font-weight: 800;
         letter-spacing: -0.3px;
     }
 
@@ -766,10 +907,11 @@ st.markdown(
     .text-box {
         border: 1px solid var(--hc-line);
         border-left: 5px solid var(--hc-gray);
-        border-radius: 10px;
+        border-radius: 12px;
         background-color: #FFFFFF;
         padding: 18px 22px;
         margin-bottom: 10px;
+        box-shadow: 0 1px 2px rgba(16, 24, 40, 0.03);
     }
 
     .text-box.blue {
@@ -786,7 +928,7 @@ st.markdown(
 
     .text-box .tb-head {
         font-size: 12.5px;
-        font-weight: 700;
+        font-weight: 800;
         letter-spacing: 0.6px;
         margin-bottom: 10px;
         color: var(--hc-gray);
@@ -812,7 +954,7 @@ st.markdown(
         color: var(--hc-amber);
         background-color: #FFF8EE;
         border: 1px solid #F2DFC2;
-        border-radius: 8px;
+        border-radius: 10px;
         padding: 11px 15px;
         font-size: 13px;
         font-weight: 600;
@@ -821,19 +963,19 @@ st.markdown(
 
     /* ===== 섹션 제목 ===== */
     .sec-title {
-        color: var(--hc-blue);
+        color: var(--hc-ink);
         font-size: 18px;
-        font-weight: 700;
+        font-weight: 800;
         letter-spacing: -0.3px;
-        margin: 26px 0 12px 0;
+        margin: 28px 0 12px 0;
         padding-left: 12px;
         border-left: 4px solid var(--hc-blue);
         line-height: 1.3;
     }
 
     .login-space {
-        height: 11vh;
-        min-height: 40px;
+        height: 7vh;
+        min-height: 30px;
     }
 
     /* ===== 긴급 연락처 배너 ===== */
@@ -846,7 +988,7 @@ st.markdown(
         background-color: #FFF5F4;
         border: 1px solid #F5C6C2;
         border-left: 6px solid var(--hc-red);
-        border-radius: 12px;
+        border-radius: 14px;
         padding: 16px 22px;
         margin: 6px 0 18px 0;
     }
@@ -890,11 +1032,22 @@ st.markdown(
         margin: 4px 0 12px 0;
     }
 
+    .list-count b {
+        color: var(--hc-blue);
+        font-size: 15px;
+    }
+
     /* ===== 모바일 ===== */
     @media (max-width: 768px) {
         .block-container {
-            padding-top: 16px;
+            padding-top: 14px;
             padding-bottom: 2rem;
+        }
+
+        .crumb {
+            justify-content: center;
+            padding: 4px 0;
+            font-size: 13px;
         }
 
         .home-header img {
@@ -915,14 +1068,14 @@ st.markdown(
 
         .st-key-worker_button button,
         .st-key-admin_button button {
-            min-height: 62px !important;
+            min-height: 60px !important;
         }
 
         .st-key-worker_button button p,
         .st-key-admin_button button p,
         .st-key-worker_button button div,
         .st-key-admin_button button div {
-            font-size: 24px !important;
+            font-size: 23px !important;
             letter-spacing: 3px !important;
         }
 
@@ -949,7 +1102,11 @@ st.markdown(
         }
 
         .page-head img {
-            height: 30px;
+            height: 28px;
+        }
+
+        .page-head .ph-div {
+            height: 28px;
         }
 
         .page-head .ph-title {
@@ -969,8 +1126,8 @@ st.markdown(
         }
 
         .login-space {
-            height: 3vh;
-            min-height: 12px;
+            height: 2vh;
+            min-height: 8px;
         }
     }
 
@@ -1105,12 +1262,108 @@ def 엑셀만들기(목록):
     return 버퍼.getvalue(), None
 
 
-def 홈으로():
+# ---------------------------------------------------------
+# 6-1. 화면 이동 함수
+#   버튼의 on_click 으로 연결합니다.
+#   (클릭 즉시 화면 상태를 바꾸므로 st.rerun() 이 필요 없습니다.)
+# ---------------------------------------------------------
+
+def 이동_홈():
     st.session_state.화면 = "홈"
     st.session_state.관리자로그인 = False
     st.session_state.상세제보ID = None
     st.session_state.현황상세ID = None
-    st.rerun()
+
+
+def 이동_근로자메뉴():
+    st.session_state.화면 = "근로자메뉴"
+    st.session_state.현황상세ID = None
+
+
+def 이동_처리현황목록():
+    st.session_state.현황상세ID = None
+
+
+def 이동_관리자목록():
+
+    상세ID = st.session_state.상세제보ID
+
+    if 상세ID is not None:
+        for 접두 in ["action_detail_", "ai_result_", "planned_date_", "completed_date_"]:
+            st.session_state.pop(f"{접두}{상세ID}", None)
+
+    st.session_state.상세제보ID = None
+
+
+def 이동_로그아웃():
+    이동_관리자목록()
+    이동_홈()
+
+
+def 내비게이션(경로, 뒤로=None, 키="top", 홈버튼=True, 로그아웃=False, 경로표시=True):
+
+    # 경로   : ["근로자", "안전제보"] 처럼 현재 위치를 순서대로
+    # 뒤로   : ("← 근로자 메뉴", 이동함수)  /  없으면 None
+    # 키     : 같은 화면에서 상단·하단 두 번 쓸 때 구분용
+
+    if not 경로표시 and 키 != "top":
+        st.markdown('<div class="nav-line bottom"></div>', unsafe_allow_html=True)
+
+    오른쪽칸수 = (1 if 홈버튼 else 0) + (1 if 로그아웃 else 0)
+
+    비율 = [1.6, 4.4] + [1.25] * 오른쪽칸수
+
+    칸들 = st.columns(비율, vertical_alignment="center")
+
+    with 칸들[0]:
+        if 뒤로:
+            라벨, 동작 = 뒤로
+            st.button(
+                라벨,
+                key=f"navback_{키}",
+                on_click=동작,
+                use_container_width=True
+            )
+
+    with 칸들[1]:
+        if 경로표시:
+            조각 = ['<div class="crumb"><span>🏠 처음</span>']
+
+            for i, 이름 in enumerate(경로):
+                조각.append('<span class="sep">›</span>')
+
+                if i == len(경로) - 1:
+                    조각.append(f'<span class="now">{안전(이름)}</span>')
+                else:
+                    조각.append(f'<span>{안전(이름)}</span>')
+
+            조각.append('</div>')
+
+            st.markdown("".join(조각), unsafe_allow_html=True)
+
+    다음칸 = 2
+
+    if 홈버튼:
+        with 칸들[다음칸]:
+            st.button(
+                "🏠 처음 화면",
+                key=f"navhome_{키}",
+                on_click=이동_홈,
+                use_container_width=True
+            )
+        다음칸 += 1
+
+    if 로그아웃:
+        with 칸들[다음칸]:
+            st.button(
+                "로그아웃",
+                key=f"navlogout_{키}",
+                on_click=이동_로그아웃,
+                use_container_width=True
+            )
+
+    if 경로표시:
+        st.markdown('<div class="nav-line"></div>', unsafe_allow_html=True)
 
 
 def 상태표시(상태):
@@ -1133,7 +1386,10 @@ def 상태색(상태):
 
 def 페이지헤더(제목, 부제=""):
 
-    로고 = f'<img src="{logo_image}">' if logo_image else ""
+    if logo_image:
+        로고 = f'<img src="{logo_image}"><span class="ph-div"></span>'
+    else:
+        로고 = ""
 
     조각 = (
         '<div class="page-head">'
@@ -1202,11 +1458,12 @@ def 통계카드(라벨, 값, 색):
     st.markdown(
         f"""
         <div class="stat-wrap">
+            <div class="stat-bar" style="background-color:{색};"></div>
             <div class="stat-label">
                 <span class="stat-dot" style="background-color:{색};"></span>
                 {안전(라벨)}
             </div>
-            <div class="stat-value" style="color:{색};">{값}</div>
+            <div class="stat-value" style="color:{색};">{값}<span class="stat-unit">건</span></div>
         </div>
         """,
         unsafe_allow_html=True
@@ -1339,20 +1596,22 @@ def 제보행(제보, 버튼키, 부서표시=True, 요약길이=110):
         with c1:
             st.markdown(
                 f"""
-                <div class="row-top">
-                    <span class="chip chip-status" style="background-color:{상태색(상태)};">{안전(상태)}</span>
-                    <span class="chip chip-id">#{안전(제보ID)}</span>
-                    {태그}
+                <div class="row-wrap" style="border-left-color:{상태색(상태)};">
+                    <div class="row-top">
+                        <span class="chip chip-status" style="background-color:{상태색(상태)};">{안전(상태)}</span>
+                        <span class="chip chip-id">#{안전(제보ID)}</span>
+                        {태그}
+                    </div>
+                    <div class="row-body">{안전(내용)}</div>
+                    <div class="row-meta">📍 {안전(제보.get("location", "-"))} · 🕒 {안전(생성시간)}</div>
                 </div>
-                <div class="row-body">{안전(내용)}</div>
-                <div class="row-meta">{안전(제보.get("location", "-"))} · {안전(생성시간)}</div>
                 """,
                 unsafe_allow_html=True
             )
 
         with c2:
             눌림 = st.button(
-                "상세",
+                "상세 보기 ›",
                 key=버튼키,
                 use_container_width=True
             )
@@ -1432,7 +1691,8 @@ if st.session_state.화면 == "홈":
         + 홈로고
         + 홈구분
         + '<span class="home-title">안전제보시스템</span>'
-        + '</div>',
+        + '</div>'
+        + '<div class="home-info">현장의 유해·위험요인을 제보하고, 조치 결과를 함께 확인합니다.</div>',
         unsafe_allow_html=True
     )
 
@@ -1450,7 +1710,8 @@ if st.session_state.화면 == "홈":
             사진 = f'<img src="{worker_image}">' if worker_image else "👷"
 
             st.markdown(
-                f'<div class="home-card-mark"></div><div class="home-photo">{사진}</div>',
+                f'<div class="home-card-mark"></div><div class="home-photo">{사진}</div>'
+                + '<div class="home-card-desc">위험요인 제보 · 처리현황 확인</div>',
                 unsafe_allow_html=True
             )
 
@@ -1470,7 +1731,8 @@ if st.session_state.화면 == "홈":
             사진 = f'<img src="{admin_image}">' if admin_image else "🔐"
 
             st.markdown(
-                f'<div class="home-card-mark"></div><div class="home-photo">{사진}</div>',
+                f'<div class="home-card-mark"></div><div class="home-photo">{사진}</div>'
+                + '<div class="home-card-desc">제보 확인 · 조치 등록 (로그인 필요)</div>',
                 unsafe_allow_html=True
             )
 
@@ -1490,6 +1752,12 @@ if st.session_state.화면 == "홈":
 
 elif st.session_state.화면 == "근로자메뉴":
 
+    내비게이션(
+        ["근로자"],
+        뒤로=("← 처음 화면", 이동_홈),
+        홈버튼=False
+    )
+
     페이지헤더("근로자", "하시려는 작업을 선택해주세요.")
 
     m1, m2 = st.columns(2, gap="large")
@@ -1497,7 +1765,7 @@ elif st.session_state.화면 == "근로자메뉴":
     with m1:
 
         if st.button(
-            "**제보하기**\n\n유해·위험요인을 새로 접수합니다.",
+            "**📝 제보하기**\n\n유해·위험요인을 새로 접수합니다.",
             use_container_width=True,
             key="menu_report"
         ):
@@ -1507,7 +1775,7 @@ elif st.session_state.화면 == "근로자메뉴":
     with m2:
 
         if st.button(
-            "**처리현황 확인**\n\n접수된 제보의 처리 결과를 봅니다.",
+            "**📋 처리현황 확인**\n\n접수된 제보의 처리 결과를 봅니다.",
             use_container_width=True,
             key="menu_status"
         ):
@@ -1515,21 +1783,17 @@ elif st.session_state.화면 == "근로자메뉴":
             st.session_state.현황상세ID = None
             st.rerun()
 
-    st.write("")
-
-    if st.button(
-        "처음 화면으로",
-        key="menu_home",
-        use_container_width=True
-    ):
-        홈으로()
-
 
 # =========================================================
 # 8. 근로자 안전제보
 # =========================================================
 
 elif st.session_state.화면 == "제보":
+
+    내비게이션(
+        ["근로자", "안전제보"],
+        뒤로=("← 근로자 메뉴", 이동_근로자메뉴)
+    )
 
     페이지헤더("안전제보", "현장에서 발견한 유해·위험요인을 입력해주세요.")
 
@@ -1637,19 +1901,6 @@ elif st.session_state.화면 == "제보":
                     st.error("제보 등록 중 오류가 발생했습니다.")
                     st.code(str(e))
 
-    st.write("")
-
-    b1, b2 = st.columns(2)
-
-    with b1:
-        if st.button("← 근로자 메뉴", key="report_back", use_container_width=True):
-            st.session_state.화면 = "근로자메뉴"
-            st.rerun()
-
-    with b2:
-        if st.button("처음 화면으로", key="worker_home", use_container_width=True):
-            홈으로()
-
 
 # =========================================================
 # 8-1. 처리현황 확인
@@ -1664,6 +1915,11 @@ elif st.session_state.화면 == "처리현황":
     if st.session_state.현황상세ID is not None:
 
         현황ID = st.session_state.현황상세ID
+
+        내비게이션(
+            ["근로자", "처리현황", f"#{현황ID}"],
+            뒤로=("← 처리현황 목록", 이동_처리현황목록)
+        )
 
         try:
             상세결과 = (
@@ -1682,14 +1938,6 @@ elif st.session_state.화면 == "처리현황":
             제보 = None
 
         페이지헤더("처리결과 상세", f"제보 #{현황ID} 의 처리 진행 상황입니다.")
-
-        if st.button(
-            "← 처리현황 목록으로",
-            use_container_width=True,
-            key="status_detail_back"
-        ):
-            st.session_state.현황상세ID = None
-            st.rerun()
 
         if 제보 is None:
 
@@ -1733,6 +1981,11 @@ elif st.session_state.화면 == "처리현황":
 
     else:
 
+        내비게이션(
+            ["근로자", "처리현황"],
+            뒤로=("← 근로자 메뉴", 이동_근로자메뉴)
+        )
+
         페이지헤더(
             "안전제보 처리현황",
             "접수된 전체 안전제보와 처리 진행 상황입니다."
@@ -1764,7 +2017,7 @@ elif st.session_state.화면 == "처리현황":
 
             현황검색어 = st.text_input(
                 "검색어",
-                placeholder="키워드를 검색하세요.",
+                placeholder="🔍 키워드를 검색하세요.",
                 key="status_keyword"
             )
 
@@ -1852,7 +2105,7 @@ elif st.session_state.화면 == "처리현황":
         섹션("제보 목록")
 
         st.markdown(
-            f'<div class="list-count">조회 결과 {len(현황결과)}건</div>',
+            f'<div class="list-count">조회 결과 <b>{len(현황결과)}</b>건</div>',
             unsafe_allow_html=True
         )
 
@@ -1872,18 +2125,13 @@ elif st.session_state.화면 == "처리현황":
                     st.session_state.현황상세ID = 제보.get("id")
                     st.rerun()
 
-        st.write("")
-
-        b1, b2 = st.columns(2)
-
-        with b1:
-            if st.button("← 근로자 메뉴", key="status_back", use_container_width=True):
-                st.session_state.화면 = "근로자메뉴"
-                st.rerun()
-
-        with b2:
-            if st.button("처음 화면으로", key="status_home", use_container_width=True):
-                홈으로()
+        # 목록이 길어서 맨 아래에도 이동 버튼을 둡니다.
+        내비게이션(
+            ["근로자", "처리현황"],
+            뒤로=("← 근로자 메뉴", 이동_근로자메뉴),
+            키="bottom",
+            경로표시=False
+        )
 
 
 # =========================================================
@@ -1894,6 +2142,12 @@ elif (
     st.session_state.화면 == "관리자"
     and not st.session_state.관리자로그인
 ):
+
+    내비게이션(
+        ["관리자 로그인"],
+        뒤로=("← 처음 화면", 이동_홈),
+        홈버튼=False
+    )
 
     페이지헤더("관리자 로그인", "관리자 계정으로 로그인해주세요.")
 
@@ -1936,11 +2190,6 @@ elif (
                 else:
                     st.error("ID 또는 비밀번호가 올바르지 않습니다.")
 
-        st.write("")
-
-        if st.button("처음 화면으로", key="admin_home", use_container_width=True):
-            홈으로()
-
 
 # =========================================================
 # 10. 관리자
@@ -1964,6 +2213,12 @@ elif (
         예정일키 = f"planned_date_{상세ID}"
         조치일키 = f"completed_date_{상세ID}"
 
+        내비게이션(
+            ["관리자", "제보 목록", f"#{상세ID}"],
+            뒤로=("← 제보 목록", 이동_관리자목록),
+            로그아웃=True
+        )
+
         try:
             상세결과 = (
                 supabase
@@ -1986,28 +2241,12 @@ elif (
 
             st.warning("해당 제보를 찾을 수 없습니다.")
 
-            if st.button("목록으로 돌아가기", use_container_width=True):
-                st.session_state.상세제보ID = None
-                st.rerun()
-
         else:
 
             페이지헤더(
                 "안전제보 상세",
                 f"제보 #{상세ID} 의 내용을 확인하고 조치를 등록합니다."
             )
-
-            if st.button(
-                "← 제보 목록으로",
-                use_container_width=True,
-                key="detail_back"
-            ):
-                st.session_state.pop(처리내용키, None)
-                st.session_state.pop(AI결과키, None)
-                st.session_state.pop(예정일키, None)
-                st.session_state.pop(조치일키, None)
-                st.session_state.상세제보ID = None
-                st.rerun()
 
             제보정보카드(제보, 제보자표시=True)
 
@@ -2028,7 +2267,7 @@ elif (
             st.markdown(
                 """
                 <div class="ai-warn">
-                AI가 생성한 참고 초안입니다. 반드시 안전관리자가 검토·수정한 후 저장하세요.
+                ⚠️ AI가 생성한 참고 초안입니다. 반드시 안전관리자가 검토·수정한 후 저장하세요.
                 </div>
                 """,
                 unsafe_allow_html=True
@@ -2039,7 +2278,7 @@ elif (
             with a1:
 
                 if st.button(
-                    "AI 조치방안 생성",
+                    "🤖 AI 조치방안 생성",
                     type="primary",
                     use_container_width=True,
                     key=f"ai_gen_{상세ID}"
@@ -2063,7 +2302,7 @@ elif (
             with a2:
 
                 if st.button(
-                    "처리내용란에 넣기",
+                    "↓ 처리내용란에 넣기",
                     use_container_width=True,
                     key=f"ai_apply_{상세ID}",
                     disabled=(AI결과키 not in st.session_state)
@@ -2157,7 +2396,7 @@ elif (
                 st.write("")
 
                 if st.button(
-                    "처리내용 및 상태 저장",
+                    "💾 처리내용 및 상태 저장",
                     type="primary",
                     use_container_width=True,
                     key=f"detail_save_{상세ID}"
@@ -2228,11 +2467,7 @@ elif (
 
                         st.success(f"제보 #{상세ID}가 삭제되었습니다.")
 
-                        st.session_state.pop(처리내용키, None)
-                        st.session_state.pop(AI결과키, None)
-                        st.session_state.pop(예정일키, None)
-                        st.session_state.pop(조치일키, None)
-                        st.session_state.상세제보ID = None
+                        이동_관리자목록()
                         st.rerun()
 
                     except Exception as e:
@@ -2240,12 +2475,27 @@ elif (
                         st.error("제보 삭제 중 오류가 발생했습니다.")
                         st.code(str(e))
 
+        # 상세 화면도 길어서 맨 아래에 이동 버튼을 둡니다.
+        내비게이션(
+            ["관리자", "제보 목록", f"#{상세ID}"],
+            뒤로=("← 제보 목록", 이동_관리자목록),
+            키="bottom",
+            로그아웃=True,
+            경로표시=False
+        )
+
 
     # =====================================================
     # 10-2. 관리자 목록
     # =====================================================
 
     else:
+
+        내비게이션(
+            ["관리자", "제보 목록"],
+            뒤로=None,
+            로그아웃=True
+        )
 
         페이지헤더(
             "안전제보 관리자",
@@ -2278,7 +2528,7 @@ elif (
 
             검색어 = st.text_input(
                 "검색어",
-                placeholder="키워드를 검색하세요."
+                placeholder="🔍 키워드를 검색하세요."
             )
 
             col1, col2, col3, col4 = st.columns(4)
@@ -2367,7 +2617,7 @@ elif (
 
         with 목록1:
             st.markdown(
-                f'<div class="list-count">검색 결과 {len(필터결과)}건</div>',
+                f'<div class="list-count">검색 결과 <b>{len(필터결과)}</b>건</div>',
                 unsafe_allow_html=True
             )
 
@@ -2381,7 +2631,7 @@ elif (
                     st.caption(엑셀오류)
                 else:
                     st.download_button(
-                        "엑셀 다운로드",
+                        "📥 엑셀 다운로드",
                         data=엑셀데이터,
                         file_name=f"안전제보_{datetime.now(KST).strftime('%Y%m%d')}.xlsx",
                         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -2405,17 +2655,10 @@ elif (
                     st.session_state.상세제보ID = 제보.get("id")
                     st.rerun()
 
-        st.write("")
-
-        col1, col2 = st.columns(2)
-
-        with col1:
-            if st.button("처음 화면", key="dashboard_home", use_container_width=True):
-                홈으로()
-
-        with col2:
-            if st.button("관리자 로그아웃", key="logout", use_container_width=True):
-                st.session_state.관리자로그인 = False
-                st.session_state.화면 = "홈"
-                st.session_state.상세제보ID = None
-                st.rerun()
+        내비게이션(
+            ["관리자", "제보 목록"],
+            뒤로=None,
+            키="bottom",
+            로그아웃=True,
+            경로표시=False
+        )
