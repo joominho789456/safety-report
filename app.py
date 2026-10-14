@@ -2,6 +2,7 @@ import streamlit as st
 from supabase import create_client
 import base64
 import html
+import re
 import io
 import os
 from datetime import datetime, date, timezone, timedelta
@@ -114,6 +115,27 @@ def AI_클라이언트():
         return None, f"OpenAI 연결에 실패했습니다: {e}"
 
 
+def AI결과정리(글):
+
+    # AI 답변 모양 다듬기
+    #  - 빈 줄 제거
+    #  - "2." 처럼 번호만 있는 줄은 다음 줄 내용과 한 줄로 합침
+    줄들 = [줄.strip() for 줄 in 글.splitlines() if 줄.strip()]
+    합침 = []
+    i = 0
+
+    while i < len(줄들):
+        줄 = 줄들[i]
+        if re.fullmatch(r"\d+[.)]", 줄) and i + 1 < len(줄들):
+            합침.append(f"{줄} {줄들[i + 1]}")
+            i += 2
+        else:
+            합침.append(줄)
+            i += 1
+
+    return "\n".join(합침)
+
+
 def AI_조치방안(부서, 단위작업, 위험유형, 내용):
 
     클라이언트, 연결오류 = AI_클라이언트()
@@ -162,7 +184,7 @@ def AI_조치방안(부서, 단위작업, 위험유형, 내용):
         if not 결과 or not 결과.strip():
             return None, "AI 응답이 비어 있습니다. 다시 시도해주세요."
 
-        return 결과.strip(), None
+        return AI결과정리(결과), None
 
     except Exception as e:
         return None, f"AI 호출 중 오류가 발생했습니다: {e}"
@@ -1093,7 +1115,7 @@ st.markdown(
         font-size: 17px;
         font-weight: 500;
         line-height: 1.75;
-        white-space: pre-line;
+        white-space: normal;
         word-break: break-word;
     }
 
@@ -1109,7 +1131,7 @@ st.markdown(
         font-size: 17px;
         font-weight: 500;
         line-height: 1.75;
-        white-space: pre-line;
+        white-space: normal;
         word-break: break-word;
     }
 
@@ -1243,7 +1265,7 @@ st.markdown(
         color: var(--hc-ink);
         font-size: 15.5px;
         line-height: 1.8;
-        white-space: pre-line;
+        white-space: normal;
         word-break: break-word;
     }
 
@@ -1360,7 +1382,7 @@ st.markdown(
         color: var(--hc-ink);
         font-size: 16px;
         line-height: 1.8;
-        white-space: pre-line;
+        white-space: normal;
         word-break: break-word;
     }
 
@@ -1978,6 +2000,28 @@ def 안전(값):
     return html.escape(str(값 if 값 is not None else "-"))
 
 
+def 여러줄(값):
+
+    # 여러 줄 글을 HTML 상자에 넣을 때 사용
+    # 빈 줄이 그대로 있으면 Streamlit이 그 뒤를 마크다운(번호 목록 등)으로 해석해
+    # "2." 다음에 줄이 바뀌는 등 모양이 깨짐 → 줄바꿈을 <br>로 바꿔 넣음
+    줄들 = str(값 if 값 is not None else "-").splitlines()
+    정리 = []
+
+    for 줄 in 줄들:
+        줄 = 줄.strip()
+        if not 줄:
+            if 정리 and 정리[-1] != "":
+                정리.append("")      # 연속 빈 줄은 하나로
+            continue
+        정리.append(html.escape(줄))
+
+    while 정리 and 정리[-1] == "":
+        정리.pop()
+
+    return "<br>".join(정리) if 정리 else "-"
+
+
 # 한국 표준시 (UTC+9)
 KST = timezone(timedelta(hours=9))
 
@@ -2103,7 +2147,7 @@ def 처리결과카드(제보):
     완료 = 날짜표시(제보.get("completed_date")) if 상태 == "조치완료" else None
 
     if 처리내용:
-        본문 = f'<div class="res-body">{안전(처리내용)}</div>'
+        본문 = f'<div class="res-body">{여러줄(처리내용)}</div>'
     elif 상태 == "조치중":
         본문 = '<div class="res-body empty">안전관리자가 조치를 진행하고 있습니다.</div>'
     elif 상태 == "조치완료":
@@ -2558,7 +2602,7 @@ def 텍스트박스(제목, 본문, 색="basic"):
         f"""
         <div class="text-box {색}">
             <div class="tb-head">{안전(제목)}</div>
-            <div class="tb-body">{안전(본문)}</div>
+            <div class="tb-body">{여러줄(본문)}</div>
         </div>
         """,
         unsafe_allow_html=True
@@ -2962,7 +3006,7 @@ elif st.session_state.화면 in ("근로자메뉴", "제보", "처리현황"):
                         섹션("제보 내용")
 
                         st.markdown(
-                            f'<div class="quote-box">{안전(제보.get("description", "-") or "-")}</div>',
+                            f'<div class="quote-box">{여러줄(제보.get("description", "-") or "-")}</div>',
                             unsafe_allow_html=True
                         )
 
@@ -3248,14 +3292,11 @@ elif (
 
                 else:
 
-                    # ① 처리 단계 (근로자 화면과 같은 모양)
-                    처리단계표시(제보)
-
-                    # ② 제보 내용
+                    # 제보 내용
                     섹션("제보 내용")
 
                     st.markdown(
-                        f'<div class="quote-box">{안전(제보.get("description", "-") or "-")}</div>',
+                        f'<div class="quote-box">{여러줄(제보.get("description", "-") or "-")}</div>',
                         unsafe_allow_html=True
                     )
 
@@ -3306,7 +3347,7 @@ elif (
 
                         if 있음:
                             st.markdown(
-                                f'<div class="ai-result">{안전(st.session_state[AI결과키])}</div>'
+                                f'<div class="ai-result">{여러줄(AI결과정리(st.session_state[AI결과키]))}</div>'
                                 '<div class="ai-note">AI가 만든 참고 초안입니다. 검토 후 필요한 내용만 처리내용에 옮겨 적어주세요.</div>',
                                 unsafe_allow_html=True
                             )
