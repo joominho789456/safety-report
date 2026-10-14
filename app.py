@@ -686,7 +686,7 @@ st.markdown(
         justify-content: center;
         align-items: center;
         gap: 18px;
-        margin: 18px 0 30px 0;
+        margin: 18px 0 48px 0;
         flex-wrap: wrap;
     }
 
@@ -752,6 +752,12 @@ st.markdown(
 
     .home-card-mark {
         display: none;
+    }
+
+    /* 그림과 근로자·관리자 버튼 사이 간격 */
+    .st-key-worker_button,
+    .st-key-admin_button {
+        margin-top: 14px;
     }
 
     .st-key-worker_button button,
