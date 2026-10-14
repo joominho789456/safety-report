@@ -1946,6 +1946,28 @@ def 날짜표시(값):
     return 변환.strftime("%Y-%m-%d")
 
 
+# 관리자 처리내용 기본 양식
+처리내용양식 = """■ 조치 담당:
+■ 조치 내용:
+■ 재발 방지 대책:
+■ 비고:"""
+
+
+def 양식정리(글):
+
+    # 저장할 때 비어 있는 양식 줄(예: "■ 비고:")은 빼서
+    # 근로자 화면에 빈 항목이 보이지 않게 함
+    남김 = []
+
+    for 줄 in (글 or "").splitlines():
+        내용 = 줄.strip()
+        if 내용.startswith("■") and 내용.rstrip().endswith((":", "：")):
+            continue
+        남김.append(줄.rstrip())
+
+    return "\n".join(남김).strip()
+
+
 def 월일(값):
     # 날짜 → "10월 30일"
     d = 날짜파싱(값)
@@ -2001,8 +2023,12 @@ def 처리결과카드(제보):
 
     if 처리내용:
         본문 = f'<div class="res-body">{안전(처리내용)}</div>'
+    elif 상태 == "조치중":
+        본문 = '<div class="res-body empty">안전관리자가 조치를 진행하고 있습니다.</div>'
+    elif 상태 == "조치완료":
+        본문 = '<div class="res-body empty">조치가 완료되었습니다.</div>'
     else:
-        본문 = '<div class="res-body empty">아직 등록된 조치 내용이 없습니다.</div>'
+        본문 = '<div class="res-body empty">안전관리자가 확인 중입니다.</div>'
 
     일정 = ""
     if 완료:
@@ -2018,7 +2044,7 @@ def 처리결과카드(제보):
     )
 
 
-def 제보정보표(제보):
+def 제보정보표(제보, 제보자표시=False):
 
     # 번호·시간·부서·단위작업·위험유형: 필요할 때만 보는 정보라 작게
     항목 = [
@@ -2028,6 +2054,10 @@ def 제보정보표(제보):
         ("단위작업", 제보.get("location") or "-"),
         ("위험유형", 제보.get("risk_type") or "-"),
     ]
+
+    # 제보자 이름은 관리자 화면에서만
+    if 제보자표시:
+        항목.append(("제보자", (제보.get("reporter_name") or "").strip() or "익명"))
 
     칸 = "".join(
         f'<div class="meta-item"><span class="meta-k">{안전(k)}</span>'
@@ -3133,25 +3163,19 @@ elif (
 
                 if 제보 is None:
 
-                    페이지헤더("안전제보 상세", "제보를 찾을 수 없습니다.")
-
                     st.warning("해당 제보를 찾을 수 없습니다.")
 
                 else:
 
-                    페이지헤더(
-                        "안전제보 상세",
-                        f"제보 #{상세ID} 의 내용을 확인하고 조치를 등록합니다."
-                    )
+                    # ① 처리 단계 (근로자 화면과 같은 모양)
+                    처리단계표시(제보)
 
-                    제보정보카드(제보, 제보자표시=True)
-
+                    # ② 제보 내용
                     섹션("제보 내용")
 
-                    텍스트박스(
-                        "접수된 내용",
-                        제보.get("description", "-") or "-",
-                        "blue"
+                    st.markdown(
+                        f'<div class="quote-box">{안전(제보.get("description", "-") or "-")}</div>',
+                        unsafe_allow_html=True
                     )
 
                     # -------------------------------------------------
@@ -3169,42 +3193,26 @@ elif (
                         unsafe_allow_html=True
                     )
 
-                    a1, a2 = st.columns(2)
+                    # 생성만 하고, 처리내용에는 관리자가 직접 골라 옮겨 적음
+                    if st.button(
+                        "🤖 AI 조치방안 생성",
+                        type="primary",
+                        key=f"ai_gen_{상세ID}"
+                    ):
 
-                    with a1:
+                        with st.spinner("조치방안을 작성하는 중입니다."):
 
-                        if st.button(
-                            "🤖 AI 조치방안 생성",
-                            type="primary",
-                            use_container_width=True,
-                            key=f"ai_gen_{상세ID}"
-                        ):
+                            결과텍스트, 오류 = AI_조치방안(
+                                제보.get("department", ""),
+                                제보.get("location", ""),
+                                제보.get("risk_type", ""),
+                                제보.get("description", "")
+                            )
 
-                            with st.spinner("조치방안을 작성하는 중입니다."):
-
-                                결과텍스트, 오류 = AI_조치방안(
-                                    제보.get("department", ""),
-                                    제보.get("location", ""),
-                                    제보.get("risk_type", ""),
-                                    제보.get("description", "")
-                                )
-
-                            if 오류:
-                                st.error(오류)
-                            else:
-                                st.session_state[AI결과키] = 결과텍스트
-                                st.rerun()
-
-                    with a2:
-
-                        if st.button(
-                            "↓ 처리내용란에 넣기",
-                            use_container_width=True,
-                            key=f"ai_apply_{상세ID}",
-                            disabled=(AI결과키 not in st.session_state)
-                        ):
-
-                            st.session_state[처리내용키] = st.session_state.get(AI결과키, "")
+                        if 오류:
+                            st.error(오류)
+                        else:
+                            st.session_state[AI결과키] = 결과텍스트
                             st.rerun()
 
                     if AI결과키 in st.session_state:
@@ -3248,13 +3256,16 @@ elif (
                             key=f"detail_risk_{상세ID}"
                         )
 
+                        # 아직 처리내용이 없는 제보는 기본 양식을 채워서 보여줌
                         if 처리내용키 not in st.session_state:
-                            st.session_state[처리내용키] = 제보.get("action_detail", "") or ""
+                            st.session_state[처리내용키] = (
+                                제보.get("action_detail", "") or 처리내용양식
+                            )
 
                         처리내용 = st.text_area(
                             "처리내용",
                             placeholder="어떻게 조치했는지 작성해주세요.",
-                            height=230,
+                            height=200,
                             key=처리내용키
                         )
 
@@ -3303,7 +3314,7 @@ elif (
                                 저장데이터 = {
                                     "status": 새로운상태,
                                     "risk_type": 새로운유형,
-                                    "action_detail": 처리내용.strip()
+                                    "action_detail": 양식정리(처리내용)
                                 }
 
                                 if 새로운상태 == "미조치":
@@ -3336,6 +3347,11 @@ elif (
 
                                 st.error("저장 중 오류가 발생했습니다.")
                                 st.code(str(e))
+
+                    # ④ 제보 정보 (제보자 포함, 맨 아래)
+                    섹션("제보 정보")
+
+                    제보정보표(제보, 제보자표시=True)
 
                     st.write("")
 
